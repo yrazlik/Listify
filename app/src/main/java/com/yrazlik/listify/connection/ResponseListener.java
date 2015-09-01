@@ -5,6 +5,6 @@ package com.yrazlik.listify.connection;
  */
 public interface ResponseListener {
 
-    public void onSuccess();
+    public void onSuccess(int requestId, Object response);
     public void onFailure();
 }

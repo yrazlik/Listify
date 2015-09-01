@@ -37,4 +37,5 @@ dependencies {
 
     compile 'com.android.support:appcompat-v7:22.1.0'
     compile 'com.mcxiaoke.volley:library:1.0.18'
+    compile 'com.google.code.gson:gson:2.1'
 }

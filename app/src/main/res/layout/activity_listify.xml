@@ -12,12 +12,31 @@
         android:layout_marginRight="15dp"
         android:hint="@string/hint_artist"/>
 
+    <RelativeLayout
+        android:id="@+id/suggestedArtistsRL"
+        android:layout_below="@+id/edittextArtist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@+id/edittextArtist"
+        android:layout_alignRight="@+id/edittextArtist"
+        android:visibility="gone">
+
+        <ListView
+            android:id="@+id/suggestedArtistLV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+        </ListView>
+
+    </RelativeLayout>
+
     <Button
         android:id="@+id/buttonCreateListify"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/listify"
-        android:layout_below="@+id/edittextArtist"
+        android:layout_below="@+id/suggestedArtistsRL"
         android:layout_marginTop="10dp"/>
 
 </RelativeLayout>
