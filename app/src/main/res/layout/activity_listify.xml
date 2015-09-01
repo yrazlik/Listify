@@ -3,40 +3,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <EditText
-        android:id="@+id/edittextArtist"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:hint="@string/hint_artist"/>
+        android:layout_centerInParent="true">
 
-    <RelativeLayout
-        android:id="@+id/suggestedArtistsRL"
-        android:layout_below="@+id/edittextArtist"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignLeft="@+id/edittextArtist"
-        android:layout_alignRight="@+id/edittextArtist"
-        android:visibility="gone">
-
-        <ListView
-            android:id="@+id/suggestedArtistLV"
+        <EditText
+            android:id="@+id/edittextArtist"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:singleLine="true"
+            android:hint="@string/hint_artist" />
+
+        <RelativeLayout
+            android:id="@+id/suggestedArtistsRL"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignLeft="@+id/edittextArtist"
+            android:layout_alignRight="@+id/edittextArtist"
+            android:layout_below="@+id/edittextArtist"
+            android:visibility="gone">
+
+            <ListView
+                android:id="@+id/suggestedArtistLV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
 
-        </ListView>
+            </ListView>
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/buttonCreateListify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/suggestedArtistsRL"
+            android:layout_marginTop="50dp"
+            android:text="@string/listify" />
 
     </RelativeLayout>
-
-    <Button
-        android:id="@+id/buttonCreateListify"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/listify"
-        android:layout_below="@+id/suggestedArtistsRL"
-        android:layout_marginTop="10dp"/>
 
 </RelativeLayout>

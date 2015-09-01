@@ -1,6 +1,7 @@
 package com.yrazlik.listify;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -38,9 +39,8 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
     private SuggestedArtistsAdapter suggestedArtistsAdapter;
     private boolean listItemClicked = false;
     private Artist searchedArtist;
-    private ArrayList<Artist> relatedArtists;
     private String searchedArtistName;
-    private ArrayList<Track> selectedTracks;
+    private boolean openPlayListDialog = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +60,22 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 listItemClicked = true;
-                Artist artist = (Artist)parent.getAdapter().getItem(position);
-                if(artist != null){
+                Artist artist = (Artist) parent.getAdapter().getItem(position);
+                if (artist != null) {
                     String artistName = artist.getName();
-                    if(artistName != null){
+                    if (artistName != null) {
                         edittextArtist.setText(artistName);
                         suggestedArtistRL.setVisibility(View.GONE);
                     }
+                }
+            }
+        });
+
+        edittextArtist.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    suggestedArtistLV.setVisibility(View.GONE);
                 }
             }
         });
@@ -173,30 +182,16 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
             RelatedArtistsResponse relatedArtistsResponse = (RelatedArtistsResponse)response;
             if(relatedArtistsResponse != null){
                 if(relatedArtistsResponse.getArtists() != null && relatedArtistsResponse.getArtists().size() > 0){
+                    ArrayList<String> relatedArtistIds = new ArrayList<String>();
                     for(Artist a : relatedArtistsResponse.getArtists()){
-                        if(a.getId() != null){
-                            ServiceRequest request = new ServiceRequest(getBaseContext(), listener);
-                            request.makeGetArtistsTopTracksRequest(Request.getTopTracks, a.getId());
+                        if(a.getId() != null) {
+                            relatedArtistIds.add(a.getId());
                         }
                     }
+                    Intent i = new Intent(this, CreatePlaylistActivity.class);
+                    i.putStringArrayListExtra(CreatePlaylistActivity.EXTRA_RELATED_ARTISTS, relatedArtistIds);
+                    startActivity(i);
                 }
-            }
-        }else if(requestId == Request.getTopTracks){
-            TopTracksResponse topTracksResponse = (TopTracksResponse)response;
-            ArrayList<Track> tracks = topTracksResponse.getTracks();
-            if(tracks != null && tracks.size() > 0) {
-                int topTracksSize = tracks.size();
-                int low = 0, high = topTracksSize;
-                int rand = new Random().nextInt(high);
-                Track t = tracks.get(rand);
-                if(selectedTracks == null){
-                    selectedTracks = new ArrayList<Track>();
-                }
-
-                if(selectedTracks.size() < 26){
-                    selectedTracks.add(t);
-                }
-
             }
         }
 

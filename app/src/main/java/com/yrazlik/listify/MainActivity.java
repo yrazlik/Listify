@@ -54,6 +54,7 @@ public class MainActivity extends Activity implements
         if (requestCode == REQUEST_CODE) {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
             if (response.getType() == AuthenticationResponse.Type.TOKEN) {
+                AppConstants.ACCESS_TOKEN = response.getAccessToken();
                 Intent i = new Intent(this, ListifyActivity.class);
                 startActivity(i);
                 finish();
