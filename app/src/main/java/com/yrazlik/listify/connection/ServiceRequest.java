@@ -7,6 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
@@ -16,7 +17,9 @@ import com.yrazlik.listify.connection.response.RelatedArtistsResponse;
 import com.yrazlik.listify.connection.response.TopTracksResponse;
 import com.yrazlik.listify.connection.response.UserProfileResponse;
 
-import java.io.UnsupportedEncodingException;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -166,30 +169,26 @@ public class ServiceRequest {
     public void makeCreatePlaylistRequest(final int requestId, final String jsonData) {
         RequestQueue queue = Volley.newRequestQueue(mContext);
         String url = AppConstants.API_BASE_URL + "users/yrazlik/playlists";
-
+        JSONObject object = null;
+        try {
+            object = new JSONObject(jsonData);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         // Request a string response from the provided URL.
 
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>()
-        {
+
+        JsonObjectRequest request = new JsonObjectRequest(url, object, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(String response) {
-                try{
-                    Gson gson = new Gson();
-                    UserProfileResponse userProfileResponse = gson.fromJson(response, UserProfileResponse.class);
-                    mListener.onSuccess(requestId, userProfileResponse);
-                }catch (Exception e){
-                    //TODO: implement parse error case
-                }
+            public void onResponse(JSONObject response) {
+
             }
-        },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        mListener.onFailure();
-                    }
-                }
-        ) {
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String>  params = new HashMap<String, String>();
@@ -197,24 +196,6 @@ public class ServiceRequest {
                 params.put("Authorization", "Bearer " + AppConstants.ACCESS_TOKEN);
                 params.put("Content-Type", "application/json");
                 return params;
-            }
-
-            @Override
-            public byte[] getPostBody() throws AuthFailureError {
-                try {
-                    return jsonData.getBytes("utf-8");
-                } catch (UnsupportedEncodingException e) {
-                    return null;
-                }
-            }
-
-            @Override
-            public byte[] getBody() {
-                try {
-                    return jsonData.getBytes("utf-8");
-                } catch (UnsupportedEncodingException e) {
-                    return null;
-                }
             }
         };
 

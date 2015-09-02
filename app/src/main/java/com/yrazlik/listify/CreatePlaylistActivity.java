@@ -118,7 +118,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
         }else if(requestId == Request.getUserProfile){
             UserProfileResponse userProfileResponse = (UserProfileResponse)response;
             String userId = userProfileResponse.getId();
-            String jsonData = "{ \"name\": \"Hello Playlist\", \"public\": false\"}";
+            String jsonData = "{\"name\":\"A New Playlist\", \"public\":false}";
 
             ServiceRequest request = new ServiceRequest(this, listener);
             request.makeCreatePlaylistRequest(Request.createPlaylist, jsonData);
