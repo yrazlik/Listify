@@ -2,6 +2,7 @@ package com.yrazlik.listify.connection;
 
 import android.content.Context;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -13,6 +14,11 @@ import com.yrazlik.listify.AppConstants;
 import com.yrazlik.listify.connection.response.ArtistsResponse;
 import com.yrazlik.listify.connection.response.RelatedArtistsResponse;
 import com.yrazlik.listify.connection.response.TopTracksResponse;
+import com.yrazlik.listify.connection.response.UserProfileResponse;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by SUUSER on 31.08.2015.
@@ -113,5 +119,106 @@ public class ServiceRequest {
         });
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
+    }
+
+    public void makeGetUserProfileRequest(final int requestId) {
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        String url = AppConstants.API_BASE_URL + AppConstants.USER_PROFILE_BASE_URL;
+
+        // Request a string response from the provided URL.
+
+        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    Gson gson = new Gson();
+                    UserProfileResponse userProfileResponse = gson.fromJson(response, UserProfileResponse.class);
+                    mListener.onSuccess(requestId, userProfileResponse);
+                }catch (Exception e){
+                    //TODO: implement parse error case
+                }
+            }
+        },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        mListener.onFailure();
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("Accept", "application/json");
+                params.put("Authorization", "Bearer " + AppConstants.ACCESS_TOKEN);
+
+                return params;
+            }
+        };
+
+
+        queue.add(request);
+    }
+
+
+    public void makeCreatePlaylistRequest(final int requestId, final String jsonData) {
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        String url = AppConstants.API_BASE_URL + "users/yrazlik/playlists";
+
+        // Request a string response from the provided URL.
+
+        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    Gson gson = new Gson();
+                    UserProfileResponse userProfileResponse = gson.fromJson(response, UserProfileResponse.class);
+                    mListener.onSuccess(requestId, userProfileResponse);
+                }catch (Exception e){
+                    //TODO: implement parse error case
+                }
+            }
+        },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        mListener.onFailure();
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("Accept", "application/json");
+                params.put("Authorization", "Bearer " + AppConstants.ACCESS_TOKEN);
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+
+            @Override
+            public byte[] getPostBody() throws AuthFailureError {
+                try {
+                    return jsonData.getBytes("utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    return null;
+                }
+            }
+
+            @Override
+            public byte[] getBody() {
+                try {
+                    return jsonData.getBytes("utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    return null;
+                }
+            }
+        };
+
+
+        queue.add(request);
     }
 }

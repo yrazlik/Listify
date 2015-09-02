@@ -1,12 +1,11 @@
 package com.yrazlik.listify;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.spotify.sdk.android.player.Config;
@@ -17,7 +16,7 @@ import com.yrazlik.listify.connection.ResponseListener;
 import com.yrazlik.listify.connection.ServiceRequest;
 import com.yrazlik.listify.connection.request.Request;
 import com.yrazlik.listify.connection.response.TopTracksResponse;
-import com.yrazlik.listify.data.Artist;
+import com.yrazlik.listify.connection.response.UserProfileResponse;
 import com.yrazlik.listify.data.Track;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ import java.util.Random;
 /**
  * Created by SUUSER on 01.09.2015.
  */
-public class CreatePlaylistActivity extends Activity implements ResponseListener{
+public class CreatePlaylistActivity extends Activity implements ResponseListener, View.OnClickListener{
 
     public static String EXTRAS = "EXTRAS";
     public static String EXTRA_RELATED_ARTISTS = "RELATED_ARTISTS";
@@ -37,6 +36,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     private ArrayList<String> relatedArtists;
     private ArrayList<Track> selectedTracks;
     Player mPlayer = null;
+    private Button buttonNew, buttonSave, buttonOpenInSpotify;
 
 
 
@@ -44,7 +44,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_playlist);
+        setContentView(R.layout.activity_playlist);
         selectedTracks = new ArrayList<Track>();
         if(getIntent() != null && getIntent().getExtras() != null){
             Bundle b = getIntent().getExtras();
@@ -55,6 +55,13 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
 
     private void initUI(){
         playList = (ListView)findViewById(R.id.playList);
+        buttonNew = (Button)findViewById(R.id.buttonNew);
+        buttonSave = (Button)findViewById(R.id.buttonSave);
+        buttonOpenInSpotify = (Button)findViewById(R.id.buttonOpenInSpotify);
+        buttonNew.setOnClickListener(this);
+        buttonSave.setOnClickListener(this);
+        buttonOpenInSpotify.setOnClickListener(this);
+
         playList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -108,11 +115,33 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
                 playListAdapter.notifyDataSetChanged();
 
             }
+        }else if(requestId == Request.getUserProfile){
+            UserProfileResponse userProfileResponse = (UserProfileResponse)response;
+            String userId = userProfileResponse.getId();
+            String jsonData = "{ \"name\": \"Hello Playlist\", \"public\": false\"}";
+
+            ServiceRequest request = new ServiceRequest(this, listener);
+            request.makeCreatePlaylistRequest(Request.createPlaylist, jsonData);
         }
     }
 
     @Override
     public void onFailure() {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.buttonNew){
+            finish();
+        }else if(v.getId() == R.id.buttonSave){
+            //TODO: save playlist on spotify
+            //First get user's id:
+            ServiceRequest request = new ServiceRequest(this, listener);
+            request.makeGetUserProfileRequest(Request.getUserProfile);
+
+        }else if(v.getId() == R.id.buttonOpenInSpotify){
+            //TODO: open playlist on spotify
+        }
     }
 }

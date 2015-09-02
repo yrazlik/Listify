@@ -11,5 +11,7 @@ public class AppConstants {
     public static final String API_BASE_URL = "https://api.spotify.com/v1/";
     public static final String SEARCH_BASE_URL = "search/";
     public static final String ARTISTS_BASE_URL = "artists/";
+    public static final String USER_PROFILE_BASE_URL = "me/";
+    public static final String CREATE_PLAYLIST_BASE_URL = "users/playlists/";
 
 }

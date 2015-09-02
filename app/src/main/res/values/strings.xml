@@ -7,4 +7,7 @@
     <string name="start">LET\'S GO!</string>
     <string name="listify">LISTIFY!</string>
     <string name="hint_artist">Artist</string>
+    <string name="create_new">New</string>
+    <string name="save">Save</string>
+    <string name="open_in_spotify">Open in Spotify</string>
 </resources>

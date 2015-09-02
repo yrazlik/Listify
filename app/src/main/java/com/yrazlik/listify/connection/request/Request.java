@@ -9,5 +9,7 @@ public class Request {
     public static final int getArtist = 2;
     public static final int getRelatedArtists = 3;
     public static final int getTopTracks = 4;
+    public static final int getUserProfile = 5;
+    public static final int createPlaylist = 6;
 
 }
