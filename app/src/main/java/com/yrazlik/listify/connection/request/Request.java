@@ -11,5 +11,6 @@ public class Request {
     public static final int getTopTracks = 4;
     public static final int getUserProfile = 5;
     public static final int createPlaylist = 6;
+    public static final int addTracksToPlaylist = 7;
 
 }

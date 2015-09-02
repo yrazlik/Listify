@@ -10,4 +10,8 @@
     <string name="create_new">New</string>
     <string name="save">Save</string>
     <string name="open_in_spotify">Open in Spotify</string>
+    <string name="errorAuthenticate">Authentication error. Please check your username and password.</string>
+    <string name="enter_artist_or_track">Enter an artist or a track.</string>
+    <string name="wait_a_little">Wait a little bit....</string>
+    <string name="enjoy_playlist">Enjoy your playlist!</string>
 </resources>

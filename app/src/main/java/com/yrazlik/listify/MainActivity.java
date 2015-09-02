@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
@@ -54,6 +55,8 @@ public class MainActivity extends Activity implements
                 Intent i = new Intent(this, ListifyActivity.class);
                 startActivity(i);
                 finish();
+            } else{
+                Toast.makeText(this, getString(R.string.errorAuthenticate), Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -1,29 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/listify_black_bg">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
-        <EditText
-            android:id="@+id/edittextArtist"
+        <LinearLayout
+            android:id="@+id/images"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/img1"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/kkk"/>
+
+                <TextView
+                    android:layout_below="@+id/img1"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/img1"
+                    android:layout_alignRight="@id/img1"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:text="@string/enter_artist_or_track"/>
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/img2"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/sandclock"/>
+
+                <TextView
+                    android:layout_below="@+id/img2"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/img2"
+                    android:layout_alignRight="@id/img2"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:text="@string/wait_a_little"/>
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/img3"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/playlist"/>
+
+                <TextView
+                    android:layout_below="@+id/img3"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/img3"
+                    android:layout_alignRight="@id/img3"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:text="@string/enjoy_playlist"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/edittextContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/listify_gray"
+            android:layout_below="@id/images">
+        <EditText
+            android:id="@+id/edittextArtist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:singleLine="true"
+            android:minHeight="30dp"
+            android:background="@null"
+            android:paddingLeft="5dp"
             android:hint="@string/hint_artist" />
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/suggestedArtistsRL"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignLeft="@+id/edittextArtist"
-            android:layout_alignRight="@+id/edittextArtist"
-            android:layout_below="@+id/edittextArtist"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/edittextContainer"
+            android:layout_alignRight="@+id/edittextContainer"
+            android:layout_below="@+id/edittextContainer"
             android:visibility="gone">
 
             <ListView
@@ -43,6 +142,9 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/suggestedArtistsRL"
             android:layout_marginTop="50dp"
+            android:minWidth="160dp"
+            android:background="@drawable/oval_button"
+            android:textColor="@android:color/white"
             android:text="@string/listify" />
 
     </RelativeLayout>

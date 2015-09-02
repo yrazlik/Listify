@@ -12,7 +12,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.yrazlik.listify.AppConstants;
+import com.yrazlik.listify.AppData;
+import com.yrazlik.listify.connection.response.AddTracksToPlaylistResponse;
 import com.yrazlik.listify.connection.response.ArtistsResponse;
+import com.yrazlik.listify.connection.response.CreatePlaylistResponse;
 import com.yrazlik.listify.connection.response.RelatedArtistsResponse;
 import com.yrazlik.listify.connection.response.TopTracksResponse;
 import com.yrazlik.listify.connection.response.UserProfileResponse;
@@ -20,6 +23,7 @@ import com.yrazlik.listify.connection.response.UserProfileResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -168,7 +172,7 @@ public class ServiceRequest {
 
     public void makeCreatePlaylistRequest(final int requestId, final String jsonData) {
         RequestQueue queue = Volley.newRequestQueue(mContext);
-        String url = AppConstants.API_BASE_URL + "users/yrazlik/playlists";
+        String url = AppConstants.API_BASE_URL + AppConstants.USERS_BASE_URL + AppData.getUserId() + "/" + AppConstants.PLAYLISTS_BASE_URL;
         JSONObject object = null;
         try {
             object = new JSONObject(jsonData);
@@ -181,7 +185,11 @@ public class ServiceRequest {
         JsonObjectRequest request = new JsonObjectRequest(url, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
+                Gson gson = new Gson();
+                String res  = gson.toJson(response);
+                Gson gson2 = new Gson();
+                CreatePlaylistResponse createPlaylistResponse = gson2.fromJson(res, CreatePlaylistResponse.class);
+                mListener.onSuccess(requestId, createPlaylistResponse);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -198,6 +206,50 @@ public class ServiceRequest {
                 return params;
             }
         };
+
+
+        queue.add(request);
+    }
+
+    public void makeAddTracksToPlaylistRequest(final int requestId, String playlistId, String jsonData) {
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        String url = AppConstants.API_BASE_URL + AppConstants.USERS_BASE_URL + AppData.getUserId() + "/" + AppConstants.PLAYLISTS_BASE_URL + playlistId + "/tracks";
+
+        // Request a string response from the provided URL.
+
+        JSONObject object = null;
+        try {
+            object = new JSONObject(jsonData);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // Request a string response from the provided URL.
+
+
+        JsonObjectRequest request = new JsonObjectRequest(url, object, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Gson gson = new Gson();
+                String res  = gson.toJson(response);
+                Gson gson2 = new Gson();
+                AddTracksToPlaylistResponse addTracksToPlaylistResponse = gson2.fromJson(res, AddTracksToPlaylistResponse.class);
+                mListener.onSuccess(requestId, addTracksToPlaylistResponse);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("Accept", "application/json");
+                params.put("Authorization", "Bearer " + AppConstants.ACCESS_TOKEN);
+                return params;
+            }
+        };
+
 
 
         queue.add(request);

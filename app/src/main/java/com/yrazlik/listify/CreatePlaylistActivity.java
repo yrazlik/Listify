@@ -1,13 +1,19 @@
 package com.yrazlik.listify;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.Spotify;
@@ -15,6 +21,8 @@ import com.yrazlik.listify.adapters.PlayListAdapter;
 import com.yrazlik.listify.connection.ResponseListener;
 import com.yrazlik.listify.connection.ServiceRequest;
 import com.yrazlik.listify.connection.request.Request;
+import com.yrazlik.listify.connection.response.AddTracksToPlaylistResponse;
+import com.yrazlik.listify.connection.response.CreatePlaylistResponse;
 import com.yrazlik.listify.connection.response.TopTracksResponse;
 import com.yrazlik.listify.connection.response.UserProfileResponse;
 import com.yrazlik.listify.data.Track;
@@ -35,6 +43,8 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     private PlayListAdapter playListAdapter;
     private ArrayList<String> relatedArtists;
     private ArrayList<Track> selectedTracks;
+    private String newlyCreatedSnapshotId;
+    private CreatePlaylistResponse savedPlaylistResponse;
     Player mPlayer = null;
     private Button buttonNew, buttonSave, buttonOpenInSpotify;
 
@@ -118,10 +128,26 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
         }else if(requestId == Request.getUserProfile){
             UserProfileResponse userProfileResponse = (UserProfileResponse)response;
             String userId = userProfileResponse.getId();
-            String jsonData = "{\"name\":\"A New Playlist\", \"public\":false}";
+            AppData.setUserId(userId);
+            String jsonData = "{\"name\":\"Listify Playlist\", \"public\":false}";
 
             ServiceRequest request = new ServiceRequest(this, listener);
             request.makeCreatePlaylistRequest(Request.createPlaylist, jsonData);
+        }else if(requestId == Request.createPlaylist){
+            CreatePlaylistResponse createPlaylistResponse = (CreatePlaylistResponse)response;
+            savedPlaylistResponse = createPlaylistResponse;
+            ServiceRequest request = new ServiceRequest(this, listener);
+           String jsonData = "{\"uris\": [";
+            for(Track t : selectedTracks){
+                jsonData += "\"" + t.getUri() + "\"" + ",";
+            }
+            jsonData = jsonData.substring(0, jsonData.length()-1);
+            jsonData += "]}";
+            request.makeAddTracksToPlaylistRequest(Request.addTracksToPlaylist, createPlaylistResponse.getNameValuePairs().getId(), jsonData);
+        }else if(requestId == Request.addTracksToPlaylist){
+            AddTracksToPlaylistResponse addTracksToPlaylistResponse = new AddTracksToPlaylistResponse();
+            newlyCreatedSnapshotId = addTracksToPlaylistResponse.getSnapshot_id();
+            Toast.makeText(this, "Succesful", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -141,7 +167,11 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
             request.makeGetUserProfileRequest(Request.getUserProfile);
 
         }else if(v.getId() == R.id.buttonOpenInSpotify){
-            //TODO: open playlist on spotify
+            Intent intent = new Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH);
+            intent.setData(Uri.parse(
+                    savedPlaylistResponse.getNameValuePairs().getUri()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
     }
 }

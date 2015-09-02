@@ -11,4 +11,13 @@ import java.util.ArrayList;
  */
 public class AppData {
 
+    private static String userId;
+
+    public static String getUserId() {
+        return userId;
+    }
+
+    public static void setUserId(String userId) {
+        AppData.userId = userId;
+    }
 }

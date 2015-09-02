@@ -12,6 +12,7 @@ public class AppConstants {
     public static final String SEARCH_BASE_URL = "search/";
     public static final String ARTISTS_BASE_URL = "artists/";
     public static final String USER_PROFILE_BASE_URL = "me/";
-    public static final String CREATE_PLAYLIST_BASE_URL = "users/playlists/";
+    public static final String USERS_BASE_URL = "users/";
+    public static final String PLAYLISTS_BASE_URL = "playlists/";
 
 }
