@@ -23,6 +23,9 @@ import com.yrazlik.listify.connection.response.UserProfileResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,8 +46,33 @@ public class ServiceRequest {
 
     public void makeSuggestArtistNameRequest(final int requestId, String artistName) {
         RequestQueue queue = Volley.newRequestQueue(mContext);
+
+
         artistName = artistName.trim().replaceAll(" +", " ");
-        artistName = artistName.replaceAll(" ", "+");
+        String [] values = artistName.split(" ");
+        ArrayList<String> nameParts = new ArrayList<String>();
+        if(values != null && values.length > 0){
+            for(String s : values){
+                String value = null;
+                try {
+                    value = URLEncoder.encode(s, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                if(value != null) {
+                    nameParts.add(value);
+                }
+            }
+        }
+
+        artistName = "";
+        if(nameParts.size() > 0){
+            for(String s : nameParts){
+                artistName = artistName + "+" + s;
+            }
+            artistName = artistName.substring(1);
+        }
+
 
         String url = AppConstants.API_BASE_URL + AppConstants.SEARCH_BASE_URL + "?q=" + artistName + "&type=artist";
 

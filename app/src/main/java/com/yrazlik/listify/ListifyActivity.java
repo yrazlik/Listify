@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.yrazlik.listify.adapters.SuggestedArtistsAdapter;
 import com.yrazlik.listify.connection.ResponseListener;
@@ -129,11 +130,11 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
             }
             ArtistsResponse artistsResponse = (ArtistsResponse) response;
             ArrayList<Artist> artists = artistsResponse.getArtists().getItems();
-            if(artists != null && artists.size() > 7){
-                for(int i = 0; i < 7; i++){
+            if(artists != null && artists.size() > 4){
+                for(int i = 0; i < 4; i++){
                     suggestedArtists.add(artists.get(i));
                 }
-            }else if(artists != null && artists.size() <= 7){
+            }else if(artists != null && artists.size() <= 4){
                 for(Artist a : artists){
                     suggestedArtists.add(a);
                 }
@@ -161,22 +162,38 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
             //first we get the id of the searched artist, the we use that id to get related artists
             searchedArtist = new Artist();
             ArtistsResponse artistsResponse = (ArtistsResponse) response;
-            if(artistsResponse != null && artistsResponse.getArtists() != null && artistsResponse.getArtists().getItems() != null){
+            boolean foundSomeResultsButNameNotEqualsIgnoreCase = false;
+            if(artistsResponse != null && artistsResponse.getArtists() != null && artistsResponse.getArtists().getItems() != null && artistsResponse.getArtists().getItems().size() > 0){
+
+
                 for(Artist a : artistsResponse.getArtists().getItems()){
+                    foundSomeResultsButNameNotEqualsIgnoreCase = true;
                     String aName = a.getName();
                     if(aName != null){
                         aName = aName.trim();
-                        if(aName.equals(searchedArtistName)){
+                        if (aName.equalsIgnoreCase(searchedArtistName)){
                             searchedArtist = a;
                             break;
                         }
                     }
                 }
+            }else{
+                Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
             }
 
-            if(searchedArtist != null && searchedArtist.getId() != null){
+            if(searchedArtist != null && searchedArtist.getId() != null && searchedArtist.getId().length() > 0){
                 ServiceRequest request = new ServiceRequest(getBaseContext(), listener);
                 request.makeGetRelatedArtistsRequest(Request.getRelatedArtists, searchedArtist.getId());
+            }else if(foundSomeResultsButNameNotEqualsIgnoreCase){
+                if(artistsResponse.getArtists() != null && artistsResponse.getArtists().getItems() != null && artistsResponse.getArtists().getItems().size() > 0){
+                    searchedArtist = artistsResponse.getArtists().getItems().get(0);
+                    ServiceRequest request = new ServiceRequest(getBaseContext(), listener);
+                    if(searchedArtist != null && searchedArtist.getId() != null && searchedArtist.getId().length() > 0) {
+                        request.makeGetRelatedArtistsRequest(Request.getRelatedArtists, searchedArtist.getId());
+                    }else {
+                        Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         }else if(requestId == Request.getRelatedArtists){
             RelatedArtistsResponse relatedArtistsResponse = (RelatedArtistsResponse)response;
@@ -191,7 +208,13 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
                     Intent i = new Intent(this, CreatePlaylistActivity.class);
                     i.putStringArrayListExtra(CreatePlaylistActivity.EXTRA_RELATED_ARTISTS, relatedArtistIds);
                     startActivity(i);
+                }else {
+                    Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+
                 }
+            }else {
+                Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+
             }
         }
 

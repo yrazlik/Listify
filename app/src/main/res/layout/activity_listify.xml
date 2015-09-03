@@ -11,6 +11,7 @@
 
         <LinearLayout
             android:id="@+id/images"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
@@ -141,7 +142,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/suggestedArtistsRL"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="20dp"
             android:minWidth="160dp"
             android:background="@drawable/oval_button"
             android:textColor="@android:color/white"
