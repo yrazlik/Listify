@@ -129,7 +129,9 @@
             <ListView
                 android:id="@+id/suggestedArtistLV"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:listSelector="@android:color/transparent"
+                >
 
 
             </ListView>
@@ -143,8 +145,8 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/suggestedArtistsRL"
             android:layout_marginTop="20dp"
-            android:minWidth="160dp"
-            android:background="@drawable/oval_button"
+            android:minWidth="180dp"
+            android:background="@drawable/selector_listifiy_button"
             android:textColor="@android:color/white"
             android:text="@string/listify" />
 
