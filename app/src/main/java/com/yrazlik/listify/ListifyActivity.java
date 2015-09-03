@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -36,7 +37,8 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
     final ResponseListener listener = this;
     private ArrayList<Artist> suggestedArtists;
     private ListView suggestedArtistLV;
-    private RelativeLayout suggestedArtistRL;
+    private RelativeLayout suggestedArtistRL, parent;
+    private LinearLayout images;
     private SuggestedArtistsAdapter suggestedArtistsAdapter;
     private boolean listItemClicked = false;
     private Artist searchedArtist;
@@ -51,6 +53,10 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
     }
 
     private void initUI(){
+        parent = (RelativeLayout)findViewById(R.id.parent);
+        images = (LinearLayout)findViewById(R.id.images);
+        parent.setOnClickListener(this);
+        images.setOnClickListener(this);
         edittextArtist = (EditText)findViewById(R.id.edittextArtist);
         buttonCreateListify = (Button)findViewById(R.id.buttonCreateListify);
         suggestedArtistRL = (RelativeLayout)findViewById(R.id.suggestedArtistsRL);
@@ -117,6 +123,8 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
             }else{
                 //TODO:show error
             }
+        }else if(v.getId() == R.id.parent || v.getId() == R.id.images){
+            suggestedArtistRL.setVisibility(View.GONE);
         }
     }
 
