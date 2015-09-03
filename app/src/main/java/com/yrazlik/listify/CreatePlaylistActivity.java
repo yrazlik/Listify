@@ -4,13 +4,17 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -47,7 +51,13 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     private CreatePlaylistResponse savedPlaylistResponse;
     Player mPlayer = null;
     private Button buttonNew, buttonSave, buttonOpenInSpotify;
+    private Track nowPlayingTrack;
+    private RelativeLayout loadingLayout;
+    private ImageView dot1, dot2, dot3;
+    private boolean showDots = true;
 
+
+    int time = 0;
 
 
 
@@ -64,6 +74,48 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     }
 
     private void initUI(){
+        loadingLayout = (RelativeLayout)findViewById(R.id.loadingLayout);
+        dot1 = (ImageView)findViewById(R.id.dot1);
+        dot2 = (ImageView)findViewById(R.id.dot2);
+        dot3 = (ImageView)findViewById(R.id.dot3);
+        dot2.setVisibility(View.INVISIBLE);
+        dot3.setVisibility(View.INVISIBLE);
+
+            CountDownTimer t = new CountDownTimer(6000, 600) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    if(time%3 == 0){
+                        dot1.setVisibility(View.VISIBLE);
+                        dot2.setVisibility(View.INVISIBLE);
+                        dot3.setVisibility(View.INVISIBLE);
+                    }else if(time%3 == 1){
+                        dot1.setVisibility(View.VISIBLE);
+                        dot2.setVisibility(View.VISIBLE);
+                        dot3.setVisibility(View.INVISIBLE);
+                    }else{
+                        dot1.setVisibility(View.VISIBLE);
+                        dot2.setVisibility(View.VISIBLE);
+                        dot3.setVisibility(View.VISIBLE);
+                    }
+
+                    time++;
+
+                }
+
+                @Override
+                public void onFinish() {
+                    if(selectedTracks.size() >= 20){
+                        loadingLayout.setVisibility(View.GONE);
+                    }else {
+                        getTopTracks();
+                        start();
+                    }
+                }
+            };
+
+
+        t.start();
+
         playList = (ListView)findViewById(R.id.playList);
         buttonNew = (Button)findViewById(R.id.buttonNew);
         buttonSave = (Button)findViewById(R.id.buttonSave);
@@ -74,15 +126,43 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
 
         playList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(final AdapterView<?> parent, View view, int position, long id) {
                 final Track t = (Track)parent.getAdapter().getItem(position);
+                final ImageView playButton = (ImageView)parent.findViewById(R.id.playButton);
                 if(t != null){
                     Config playerConfig = new Config(getApplicationContext(), AppConstants.ACCESS_TOKEN, AppConstants.CLIENT_ID);
 
                     mPlayer = Spotify.getPlayer(playerConfig, this, new Player.InitializationObserver() {
                         @Override
                         public void onInitialized(Player player) {
-                            mPlayer.play(t.getUri());
+                            if(t.isPlaying) {
+                                for(int i=0; i<parent.getAdapter().getCount(); i++){
+                                    Track t = (Track)parent.getAdapter().getItem(i);
+                                    t.isPlaying = false;
+                                }
+                                mPlayer.pause();
+                                ((PlayListAdapter)parent.getAdapter()).notifyDataSetChanged();
+                            }else{
+                                for(int i=0; i<parent.getAdapter().getCount(); i++){
+                                    Track t = (Track)parent.getAdapter().getItem(i);
+                                    t.isPlaying = false;
+                                }
+                                if(nowPlayingTrack != null && nowPlayingTrack.getUri().equalsIgnoreCase(t.getUri())){
+                                    mPlayer.resume();
+                                    t.isPlaying = true;
+                                    playButton.setBackgroundResource(R.drawable.pause);
+                                    ((PlayListAdapter)parent.getAdapter()).notifyDataSetChanged();
+                                    nowPlayingTrack = t;
+                                }else{
+                                    mPlayer.play(t.getUri());
+                                    t.isPlaying = true;
+                                    playButton.setBackgroundResource(R.drawable.pause);
+                                    nowPlayingTrack = t;
+                                    ((PlayListAdapter)parent.getAdapter()).notifyDataSetChanged();
+                                }
+
+                            }
+
                         }
 
                         @Override
@@ -115,6 +195,9 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
                 int low = 0, high = topTracksSize;
                 int rand = new Random().nextInt(high);
                 Track t = tracks.get(rand);
+                if(t.getArtists() != null && t.getArtists().size() > 0) {
+                    t.setArtist(t.getArtists().get(0).getName());
+                }
                 if(selectedTracks == null){
                     selectedTracks = new ArrayList<Track>();
                 }

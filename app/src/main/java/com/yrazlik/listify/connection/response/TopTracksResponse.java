@@ -1,5 +1,6 @@
 package com.yrazlik.listify.connection.response;
 
+import com.yrazlik.listify.data.Artist;
 import com.yrazlik.listify.data.Track;
 
 import java.util.ArrayList;

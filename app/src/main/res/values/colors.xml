@@ -5,6 +5,9 @@
     <color name="listify_green">#2ABF0F</color>
     <color name="listify_gray">#636060</color>
     <color name="listify_light_gray">#787A7A</color>
+    <color name="playlist_item_selected">#45454A</color>
+    <color name="playlist_row_bg">#0B0C0D</color>
+    <color name="divider_color">#717475</color>
 
 
 </resources>

@@ -15,4 +15,7 @@
     <string name="wait_a_little">Wait a little bit....</string>
     <string name="enjoy_playlist">Enjoy your playlist!</string>
     <string name="no_results_found">Can\'t find any related tracks.</string>
+    <string name="unknown_artist">Unknown Artist</string>
+    <string name="please_wait">Please Wait While We Create Your Playlist</string>
+
 </resources>

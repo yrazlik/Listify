@@ -1,5 +1,7 @@
 package com.yrazlik.listify.data;
 
+import java.util.ArrayList;
+
 /**
  * Created by yrazlik on 9/1/15.
  */
@@ -9,6 +11,9 @@ public class Track {
     private String name;
     private String uri;
     private  String preview;
+    public boolean isPlaying = false;
+    private ArrayList<Artist> artists;
+    private String artist;
 
     public String getId() {
         return id;
@@ -40,5 +45,29 @@ public class Track {
 
     public void setUri(String uri) {
         this.uri = uri;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
+    public void setIsPlaying(boolean isPlaying) {
+        this.isPlaying = isPlaying;
+    }
+
+    public ArrayList<Artist> getArtists() {
+        return artists;
+    }
+
+    public void setArtists(ArrayList<Artist> artists) {
+        this.artists = artists;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
     }
 }

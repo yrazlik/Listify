@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yrazlik.listify.R;
@@ -48,6 +49,7 @@ public class PlayListAdapter extends ArrayAdapter<Track>{
             convertView = inflater.inflate(layoutId, parent, false);
             holder = new ViewHolder();
             holder.trackName = (TextView) convertView.findViewById(R.id.trackName);
+            holder.playButton = (ImageView) convertView.findViewById(R.id.playButton);
             convertView.setTag(holder);
         }else {
             holder = (ViewHolder) convertView.getTag();
@@ -55,7 +57,16 @@ public class PlayListAdapter extends ArrayAdapter<Track>{
 
         Track track = getItem(position);
         if(track != null){
-            holder.trackName.setText(track.getName());
+            if(track.getArtist() != null && track.getArtist().length() > 0){
+                holder.trackName.setText(track.getArtist() + " - " + track.getName());
+            }else {
+                holder.trackName.setText(mContext.getResources().getString(R.string.unknown_artist) + " - " + track.getName());
+            }
+            if(track.isPlaying){
+                holder.playButton.setBackgroundResource(R.drawable.pause);
+            }else {
+                holder.playButton.setBackgroundResource(R.drawable.play);
+            }
         }
 
         return convertView;
@@ -63,6 +74,7 @@ public class PlayListAdapter extends ArrayAdapter<Track>{
 
     static class ViewHolder{
         public TextView trackName;
+        public ImageView playButton;
     }
 
 

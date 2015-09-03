@@ -1,47 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/playlist_row_bg">
 
-    <ListView
-        android:id="@+id/playList"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/buttonsLayout"
-        android:layout_marginBottom="10dp"></ListView>
+        android:layout_height="match_parent"
+        android:background="@color/playlist_row_bg">
 
-    <LinearLayout
-        android:id="@+id/buttonsLayout"
+        <ListView
+            android:id="@+id/playList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/buttonsLayout"
+            android:layout_marginBottom="10dp"
+            android:dividerHeight="0.5dp"
+            android:divider="@drawable/divider"
+            android:listSelector="@android:color/transparent"></ListView>
+
+        <LinearLayout
+            android:id="@+id/buttonsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:id="@+id/buttonNew"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="35dp"
+                android:textSize="12sp"
+                android:background="@drawable/selector_listifiy_button_small"
+                android:singleLine="true"
+                android:text="@string/create_new"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/buttonSave"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="35dp"
+                android:layout_marginLeft="5dp"
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:background="@drawable/selector_listifiy_button_small"
+                android:text="@string/save" />
+
+            <Button
+                android:id="@+id/buttonOpenInSpotify"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="35dp"
+                android:layout_marginLeft="5dp"
+                android:textSize="12sp"
+                android:textColor="@android:color/white"
+                android:singleLine="true"
+                android:background="@drawable/selector_listifiy_button_small"
+                android:text="@string/open_in_spotify" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp">
+        android:layout_height="match_parent"
+        android:background="@color/listify_black_bg">
 
-        <Button
-            android:id="@+id/buttonNew"
-            android:layout_width="0dp"
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minHeight="45dp"
-            android:text="@string/create_new"/>
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
-        <Button
-            android:id="@+id/buttonSave"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minHeight="45dp"
-            android:text="@string/save"/>
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/please_wait"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
 
-        <Button
-            android:id="@+id/buttonOpenInSpotify"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minHeight="45dp"
-            android:text="@string/open_in_spotify"/>
+            <RelativeLayout
+                android:layout_below="@+id/text"
+                android:layout_marginTop="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
 
-    </LinearLayout>
+                <ImageView
+                    android:id="@+id/dot1"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/dot2"
+                    />
+
+                <ImageView
+                    android:id="@+id/dot2"
+                    android:layout_toRightOf="@+id/dot1"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/dot2"
+                    />
+
+                <ImageView
+                    android:id="@+id/dot3"
+                    android:layout_toRightOf="@+id/dot2"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/dot2"
+                    />
+
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>

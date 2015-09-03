@@ -2,13 +2,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/selector_playlist_item"
     android:minHeight="50dp">
 
-    <TextView
-        android:id="@+id/trackName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/playButton"
         android:layout_marginLeft="10dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/play"/>
+
+    <TextView
+        android:layout_toRightOf="@+id/playButton"
+        android:id="@+id/trackName"
+        android:layout_width="match_parent"
+        android:layout_marginRight="10dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_centerVertical="true"
+        android:textColor="@android:color/white"
+        android:singleLine="true"
         android:textSize="14sp"/>
 
 </RelativeLayout>
