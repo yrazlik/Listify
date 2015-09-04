@@ -2,7 +2,7 @@
     <string name="app_name">Listify</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="intro_text"> Are you tired of creating playlists? By using Listify app, you only enter an artist\'s name or a track\'s name, and we automatically create a playlist for you based on the artist name or track name you entered! Then you can save the playlist we created for you and play it on Spotify!</string>
+    <string name="intro_text"> Are you tired of creating playlists? By using Listify app, you only enter an artist\'s name and we find related songs and automatically create a playlist for you based on the artist name you entered! Then you can save the playlist we created for you and play it on Spotify!</string>
     <string name="start">LET\'S GO!</string>
     <string name="listify">LISTIFY!</string>
     <string name="hint_artist">Artist</string>
@@ -10,17 +10,20 @@
     <string name="save">Save</string>
     <string name="open_in_spotify">Open in Spotify</string>
     <string name="errorAuthenticate">Authentication error. Please check your username and password.</string>
-    <string name="enter_artist_or_track">Enter an artist or a track.</string>
+    <string name="enter_artist_or_track">Enter an artist.</string>
     <string name="wait_a_little">Wait a little bit....</string>
     <string name="enjoy_playlist">Enjoy your playlist!</string>
     <string name="no_results_found">Can\'t find any related tracks.</string>
     <string name="unknown_artist">Unknown Artist</string>
     <string name="please_wait">Please Wait While We Create Your Playlist</string>
-    <string name="playlist_created">Playlist created</string>
-    <string name="succesfully">succesfully</string>
+    <string name="playlist_created">Playlist Created</string>
+    <string name="succesfully">Succesfully</string>
     <string name="ready_to_create">Ready to Create.</string>
     <string name="please_wait_2">Please Wait.</string>
     <string name="could_not_find">Could not find</string>
     <string name="any_songs">any related tracks.</string>
+    <string name="playlist_saved"> Playlist Saved</string>
+    <string name="an_error_occured"> An error occured</string>
+    <string name="please_try_again"> Please try again.</string>
 
 </resources>

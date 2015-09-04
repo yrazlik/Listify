@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +57,8 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     private ImageView dot1, dot2, dot3;
     private boolean showDots = true;
     private TextView percentage;
+    private ProgressBar progress;
+    private RelativeLayout parent;
 
 
     int time = 0;
@@ -75,6 +78,8 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     }
 
     private void initUI(){
+        parent = (RelativeLayout)findViewById(R.id.parent);
+        progress = (ProgressBar)findViewById(R.id.progress);
         percentage = (TextView)findViewById(R.id.percentage);
         loadingLayout = (RelativeLayout)findViewById(R.id.loadingLayout);
         dot1 = (ImageView)findViewById(R.id.dot1);
@@ -242,6 +247,8 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
                 }
                 playListAdapter.notifyDataSetChanged();
 
+            }else {
+                finish();
             }
         }else if(requestId == Request.getUserProfile){
             UserProfileResponse userProfileResponse = (UserProfileResponse)response;
@@ -265,14 +272,24 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
         }else if(requestId == Request.addTracksToPlaylist){
             AddTracksToPlaylistResponse addTracksToPlaylistResponse = new AddTracksToPlaylistResponse();
             newlyCreatedSnapshotId = addTracksToPlaylistResponse.getSnapshot_id();
-            Toast.makeText(this, "Succesful", Toast.LENGTH_SHORT).show();
+            progress.setVisibility(View.GONE);
+            Utils.showFadeOutDialog(parent, CreatePlaylistActivity.this, getString(R.string.playlist_saved), getString(R.string.succesfully), R.drawable.tick);
+            buttonSave.setEnabled(true);
         }
     }
 
     @Override
     public void onFailure() {
-
+        progress.setVisibility(View.GONE);
+        if(progress != null){
+            progress.setVisibility(View.GONE);
+        }
+        buttonSave.setEnabled(true);
+        Utils.showFadeOutDialog(parent, CreatePlaylistActivity.this, getString(R.string.an_error_occured), getString(R.string.please_try_again), R.drawable.error);
     }
+
+
+
 
     @Override
     public void onClick(View v) {
@@ -281,6 +298,8 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
         }else if(v.getId() == R.id.buttonSave){
             //TODO: save playlist on spotify
             //First get user's id:
+            buttonSave.setEnabled(false);
+            progress.setVisibility(View.VISIBLE);
             ServiceRequest request = new ServiceRequest(this, listener);
             request.makeGetUserProfileRequest(Request.getUserProfile);
 
