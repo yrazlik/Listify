@@ -7,15 +7,15 @@
         android:fromYScale="0.0"
         android:toYScale="1.0"
         android:fillAfter="false"
-        android:startOffset="200"
+        android:startOffset="0"
         android:duration="200"
         android:pivotX = "50%"
-        android:pivotY = "-90%"
+        android:pivotY = "-50%"
         />
     <translate
-        android:fromYDelta="50%"
+        android:fromYDelta="100%"
         android:toYDelta="0"
-        android:startOffset="200"
+        android:startOffset="0"
         android:duration="200"
         />
 </set>
