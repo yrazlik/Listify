@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/playlist_row_bg">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/playlist_row_bg">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,8 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="10dp"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/buttonNew"
@@ -38,7 +37,7 @@
                 android:singleLine="true"
                 android:text="@string/create_new"
                 android:textColor="@android:color/white"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/buttonSave"
@@ -51,7 +50,7 @@
                 android:singleLine="true"
                 android:text="@string/save"
                 android:textColor="@android:color/white"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/buttonOpenInSpotify"
@@ -64,7 +63,7 @@
                 android:singleLine="true"
                 android:text="@string/open_in_spotify"
                 android:textColor="@android:color/white"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
 
         </LinearLayout>
     </RelativeLayout>
@@ -81,7 +80,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginRight="10dp"
+            android:gravity="center_horizontal">
 
             <TextView
                 android:id="@+id/text"
@@ -91,7 +91,7 @@
                 android:text="@string/please_wait"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -100,42 +100,46 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="30dp">
 
-                <ImageView
-                    android:id="@+id/dot1"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/dot2"
-                    />
+                <RelativeLayout
+                    android:id="@+id/dots"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true">
 
-                <ImageView
-                    android:id="@+id/dot2"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/dot1"
-                    android:background="@drawable/dot2"
-                    />
+                    <ImageView
+                        android:id="@+id/dot1"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/dot2" />
 
-                <ImageView
-                    android:id="@+id/dot3"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/dot2"
-                    android:background="@drawable/dot2"
-                    />
+                    <ImageView
+                        android:id="@+id/dot2"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/dot1"
+                        android:background="@drawable/dot2" />
+
+                    <ImageView
+                        android:id="@+id/dot3"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/dot2"
+                        android:background="@drawable/dot2" />
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/percentage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/dots"
                     android:layout_centerHorizontal="true"
-                    android:text="%0"
-                    android:textSize="20sp"
-                    android:layout_below="@+id/dot3"
+                    android:layout_marginTop="20dp"
+                    android:text="%1 completed"
                     android:textColor="@android:color/white"
-                    android:textStyle="bold"
-                    android:layout_marginTop="20dp"/>
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
 
             </RelativeLayout>

@@ -237,7 +237,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
                 if(selectedTracks.size() < 20){
                     selectedTracks.add(t);
                     if(selectedTracks.size()*5 <= 100) {
-                        percentage.setText("%" + selectedTracks.size() * 5 + "completed");
+                        percentage.setText("%" + selectedTracks.size() * 5 + " completed");
                     }
                 }
                 playListAdapter.notifyDataSetChanged();
