@@ -107,7 +107,8 @@ public class MainActivity extends Activity implements
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.buttonStart){
-           startLoginActivity();//Utils.showSuccesfulDialog(parent, getApplicationContext());
+           startLoginActivity();
+           //Utils.showFadeOutDialog(parent, getApplicationContext(), getString(R.string.playlist_created), getString(R.string.succesfully), R.drawable.tick);
         }
     }
 }

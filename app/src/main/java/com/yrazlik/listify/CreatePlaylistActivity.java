@@ -1,10 +1,8 @@
 package com.yrazlik.listify;
 
 import android.app.Activity;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -17,7 +15,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.Spotify;
@@ -63,6 +60,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(R.anim.slide_bottom_in, 0);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist);
         selectedTracks = new ArrayList<Track>();
@@ -256,5 +254,11 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0, R.anim.slide_top_out);
     }
 }

@@ -20,12 +20,9 @@ import com.yrazlik.listify.connection.ServiceRequest;
 import com.yrazlik.listify.connection.request.Request;
 import com.yrazlik.listify.connection.response.ArtistsResponse;
 import com.yrazlik.listify.connection.response.RelatedArtistsResponse;
-import com.yrazlik.listify.connection.response.TopTracksResponse;
 import com.yrazlik.listify.data.Artist;
-import com.yrazlik.listify.data.Track;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by SUUSER on 31.08.2015.
@@ -47,6 +44,7 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(R.anim.slide_left_in, R.anim.fadeout);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listify);
         initUI();

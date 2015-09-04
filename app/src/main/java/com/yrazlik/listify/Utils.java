@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 /**
  * Created by yrazlik on 9/4/15.
@@ -62,12 +64,15 @@ public class Utils {
         dialog.startAnimation(anim);
     }
 
-    public static void showSuccesfulDialog(ViewGroup parent, final Context context){
+    public static void showFadeOutDialog(ViewGroup parent, final Context context, String text1, String text2, int imageId){
         LayoutInflater inflater = (LayoutInflater)   context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final RelativeLayout dialog = (RelativeLayout)inflater.inflate(R.layout.dialog_succesful, null);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         dialog.setLayoutParams(params);
+        ((TextView)dialog.findViewById(R.id.tv1)).setText(text1);
+        ((TextView)dialog.findViewById(R.id.tv2)).setText(text2);
+        ((ImageView)dialog.findViewById(R.id.dialogImage)).setBackgroundResource(imageId);
         parent.addView(dialog);
 
         Animation anim = AnimationUtils.loadAnimation(context, R.anim.anim_in);
