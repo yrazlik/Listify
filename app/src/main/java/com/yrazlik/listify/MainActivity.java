@@ -105,6 +105,10 @@ public class MainActivity extends Activity implements
     public void onClick(View v) {
         if(v.getId() == R.id.buttonStart){
             startLoginActivity();
+            /*CustomDialogFragment d = new CustomDialogFragment();
+            FragmentManager fm = getFragmentManager();
+            String tag = "";
+            d.show(fm, tag);*/
         }
     }
 }
