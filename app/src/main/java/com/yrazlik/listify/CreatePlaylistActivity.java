@@ -50,7 +50,6 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     private ArrayList<Track> selectedTracks;
     private String newlyCreatedSnapshotId;
     private CreatePlaylistResponse savedPlaylistResponse;
-    Player mPlayer = null;
     private Button buttonNew, buttonSave, buttonOpenInSpotify;
     private Track nowPlayingTrack;
     private RelativeLayout loadingLayout;
@@ -135,43 +134,73 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
                 if(t != null){
                     Config playerConfig = new Config(getApplicationContext(), AppConstants.ACCESS_TOKEN, AppConstants.CLIENT_ID);
 
-                    mPlayer = Spotify.getPlayer(playerConfig, this, new Player.InitializationObserver() {
-                        @Override
-                        public void onInitialized(Player player) {
-                            if(t.isPlaying) {
-                                for(int i=0; i<parent.getAdapter().getCount(); i++){
-                                    Track t = (Track)parent.getAdapter().getItem(i);
-                                    t.isPlaying = false;
-                                }
-                                mPlayer.pause();
-                                ((PlayListAdapter)parent.getAdapter()).notifyDataSetChanged();
-                            }else{
-                                for(int i=0; i<parent.getAdapter().getCount(); i++){
-                                    Track t = (Track)parent.getAdapter().getItem(i);
-                                    t.isPlaying = false;
-                                }
-                                if(nowPlayingTrack != null && nowPlayingTrack.getUri().equalsIgnoreCase(t.getUri())){
-                                    mPlayer.resume();
-                                    t.isPlaying = true;
-                                    playButton.setBackgroundResource(R.drawable.pause);
-                                    ((PlayListAdapter)parent.getAdapter()).notifyDataSetChanged();
-                                    nowPlayingTrack = t;
-                                }else{
-                                    mPlayer.play(t.getUri());
-                                    t.isPlaying = true;
-                                    playButton.setBackgroundResource(R.drawable.pause);
-                                    nowPlayingTrack = t;
-                                    ((PlayListAdapter)parent.getAdapter()).notifyDataSetChanged();
+                    if(AppData.mPlayer == null) {
+                        AppData.mPlayer = Spotify.getPlayer(playerConfig, this, new Player.InitializationObserver() {
+                            @Override
+                            public void onInitialized(Player player) {
+                                if (t.isPlaying) {
+                                    for (int i = 0; i < parent.getAdapter().getCount(); i++) {
+                                        Track track = (Track) parent.getAdapter().getItem(i);
+                                        track.isPlaying = false;
+                                    }
+                                    AppData.mPlayer.pause();
+                                    ((PlayListAdapter) parent.getAdapter()).notifyDataSetChanged();
+                                } else {
+                                    for (int i = 0; i < parent.getAdapter().getCount(); i++) {
+                                        Track track = (Track) parent.getAdapter().getItem(i);
+                                        track.isPlaying = false;
+                                    }
+                                    if (nowPlayingTrack != null && nowPlayingTrack.getUri().equalsIgnoreCase(t.getUri())) {
+                                        AppData.mPlayer.resume();
+                                        t.isPlaying = true;
+                                        playButton.setBackgroundResource(R.drawable.pause);
+                                        ((PlayListAdapter) parent.getAdapter()).notifyDataSetChanged();
+                                        nowPlayingTrack = t;
+                                    } else {
+                                        AppData.mPlayer.play(t.getUri());
+                                        t.isPlaying = true;
+                                        playButton.setBackgroundResource(R.drawable.pause);
+                                        nowPlayingTrack = t;
+                                        ((PlayListAdapter) parent.getAdapter()).notifyDataSetChanged();
+                                    }
+
                                 }
 
                             }
 
-                        }
+                            @Override
+                            public void onError(Throwable throwable) {
+                            }
+                        });
+                    }else {
+                        if (t.isPlaying) {
+                            for (int i = 0; i < parent.getAdapter().getCount(); i++) {
+                                Track track = (Track) parent.getAdapter().getItem(i);
+                                track.isPlaying = false;
+                            }
+                            AppData.mPlayer.pause();
+                            ((PlayListAdapter) parent.getAdapter()).notifyDataSetChanged();
+                        } else {
+                            for (int i = 0; i < parent.getAdapter().getCount(); i++) {
+                                Track track = (Track) parent.getAdapter().getItem(i);
+                                track.isPlaying = false;
+                            }
+                            if (nowPlayingTrack != null && nowPlayingTrack.getUri().equalsIgnoreCase(t.getUri())) {
+                                AppData.mPlayer.resume();
+                                t.isPlaying = true;
+                                playButton.setBackgroundResource(R.drawable.pause);
+                                ((PlayListAdapter) parent.getAdapter()).notifyDataSetChanged();
+                                nowPlayingTrack = t;
+                            } else {
+                                AppData.mPlayer.play(t.getUri());
+                                t.isPlaying = true;
+                                playButton.setBackgroundResource(R.drawable.pause);
+                                nowPlayingTrack = t;
+                                ((PlayListAdapter) parent.getAdapter()).notifyDataSetChanged();
+                            }
 
-                        @Override
-                        public void onError(Throwable throwable) {
                         }
-                    });
+                    }
                 }
             }
         });
@@ -205,9 +234,11 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
                     selectedTracks = new ArrayList<Track>();
                 }
 
-                if(selectedTracks.size() < 25){
+                if(selectedTracks.size() < 20){
                     selectedTracks.add(t);
-                    percentage.setText("%" + selectedTracks.size()*5);
+                    if(selectedTracks.size()*5 <= 100) {
+                        percentage.setText("%" + selectedTracks.size() * 5 + "completed");
+                    }
                 }
                 playListAdapter.notifyDataSetChanged();
 
@@ -260,5 +291,18 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(AppData.mPlayer != null) {
+            Spotify.destroyPlayer(this);
+        }
+        super.onDestroy();
     }
 }

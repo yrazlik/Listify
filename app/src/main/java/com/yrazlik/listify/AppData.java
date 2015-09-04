@@ -2,6 +2,7 @@ package com.yrazlik.listify;
 
 import android.content.Context;
 
+import com.spotify.sdk.android.player.Player;
 import com.yrazlik.listify.data.Track;
 
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ public class AppData {
     public static String getUserId() {
         return userId;
     }
+
+    public static Player mPlayer;
 
     public static void setUserId(String userId) {
         AppData.userId = userId;
