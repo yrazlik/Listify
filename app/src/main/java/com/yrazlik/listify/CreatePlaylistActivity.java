@@ -23,9 +23,12 @@ import com.yrazlik.listify.connection.ResponseListener;
 import com.yrazlik.listify.connection.ServiceRequest;
 import com.yrazlik.listify.connection.request.Request;
 import com.yrazlik.listify.connection.response.AddTracksToPlaylistResponse;
+import com.yrazlik.listify.connection.response.ArtistsResponse;
 import com.yrazlik.listify.connection.response.CreatePlaylistResponse;
+import com.yrazlik.listify.connection.response.RelatedArtistsResponse;
 import com.yrazlik.listify.connection.response.TopTracksResponse;
 import com.yrazlik.listify.connection.response.UserProfileResponse;
+import com.yrazlik.listify.data.Artist;
 import com.yrazlik.listify.data.Track;
 
 import java.util.ArrayList;
@@ -37,6 +40,7 @@ import java.util.Random;
 public class CreatePlaylistActivity extends Activity implements ResponseListener, View.OnClickListener{
 
     public static String EXTRAS = "EXTRAS";
+    public static String EXTRA_ARTIST_NAME = "ARTIST_NAME";
     public static String EXTRA_RELATED_ARTISTS = "RELATED_ARTISTS";
     private ResponseListener listener = this;
     private Context mContext;
@@ -51,7 +55,9 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     private Track nowPlayingTrack;
     private RelativeLayout loadingLayout;
     private ImageView dot1, dot2, dot3;
+    private String artistName;
     private boolean showDots = true;
+    private Artist searchedArtist;
 
 
     int time = 0;
@@ -67,6 +73,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
         if(getIntent() != null && getIntent().getExtras() != null){
             Bundle b = getIntent().getExtras();
             relatedArtists = (ArrayList<String>)b.get(EXTRA_RELATED_ARTISTS);
+            artistName = (String)b.get(EXTRA_ARTIST_NAME);
         }
         initUI();
     }
@@ -172,7 +179,12 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
         });
         playListAdapter = new PlayListAdapter(this, R.layout.list_row_playlist, selectedTracks);
         playList.setAdapter(playListAdapter);
-        getTopTracks();
+        getRelatedArtists();
+    }
+
+    private void getRelatedArtists(){
+        ServiceRequest request = new ServiceRequest(getBaseContext(), this);
+        request.makeSuggestArtistNameRequest(Request.getArtist, artistName);
     }
 
     private void getTopTracks(){
@@ -185,7 +197,64 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
 
     @Override
     public void onSuccess(int requestId, Object response) {
-        if(requestId == Request.getTopTracks){
+        if(requestId == Request.getArtist){
+            //first we get the id of the searched artist, the we use that id to get related artists
+            searchedArtist = new Artist();
+            ArtistsResponse artistsResponse = (ArtistsResponse) response;
+            boolean foundSomeResultsButNameNotEqualsIgnoreCase = false;
+            if(artistsResponse != null && artistsResponse.getArtists() != null && artistsResponse.getArtists().getItems() != null && artistsResponse.getArtists().getItems().size() > 0){
+
+
+                for(Artist a : artistsResponse.getArtists().getItems()){
+                    foundSomeResultsButNameNotEqualsIgnoreCase = true;
+                    String aName = a.getName();
+                    if(aName != null){
+                        aName = aName.trim();
+                        if (aName.equalsIgnoreCase(artistName)){
+                            searchedArtist = a;
+                            break;
+                        }
+                    }
+                }
+            }else{
+                Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+            }
+
+            if(searchedArtist != null && searchedArtist.getId() != null && searchedArtist.getId().length() > 0){
+                ServiceRequest request = new ServiceRequest(getBaseContext(), listener);
+                request.makeGetRelatedArtistsRequest(Request.getRelatedArtists, searchedArtist.getId());
+            }else if(foundSomeResultsButNameNotEqualsIgnoreCase){
+                if(artistsResponse.getArtists() != null && artistsResponse.getArtists().getItems() != null && artistsResponse.getArtists().getItems().size() > 0){
+                    searchedArtist = artistsResponse.getArtists().getItems().get(0);
+                    ServiceRequest request = new ServiceRequest(getBaseContext(), listener);
+                    if(searchedArtist != null && searchedArtist.getId() != null && searchedArtist.getId().length() > 0) {
+                        request.makeGetRelatedArtistsRequest(Request.getRelatedArtists, searchedArtist.getId());
+                    }else {
+                        Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }else if(requestId == Request.getRelatedArtists){
+            relatedArtists = new ArrayList<String>();
+            RelatedArtistsResponse relatedArtistsResponse = (RelatedArtistsResponse)response;
+            if(relatedArtistsResponse != null){
+                if(relatedArtistsResponse.getArtists() != null && relatedArtistsResponse.getArtists().size() > 0){
+                    relatedArtists = new ArrayList<String>();
+                    for(Artist a : relatedArtistsResponse.getArtists()){
+                        if(a.getId() != null) {
+                            relatedArtists.add(a.getId());
+                        }
+                    }
+                    getRelatedArtists();
+                }else {
+                    Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+
+                }
+            }else {
+                Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+
+            }
+        }else if(requestId == Request.getTopTracks){
             TopTracksResponse topTracksResponse = (TopTracksResponse)response;
             ArrayList<Track> tracks = topTracksResponse.getTracks();
             if(tracks != null && tracks.size() > 0) {
