@@ -19,9 +19,13 @@ import com.yrazlik.listify.connection.ResponseListener;
 import com.yrazlik.listify.connection.ServiceRequest;
 import com.yrazlik.listify.connection.request.Request;
 import com.yrazlik.listify.connection.response.ArtistsResponse;
+import com.yrazlik.listify.connection.response.RelatedArtistsResponse;
+import com.yrazlik.listify.connection.response.TopTracksResponse;
 import com.yrazlik.listify.data.Artist;
+import com.yrazlik.listify.data.Track;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by SUUSER on 31.08.2015.
@@ -37,12 +41,12 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
     private LinearLayout images;
     private SuggestedArtistsAdapter suggestedArtistsAdapter;
     private boolean listItemClicked = false;
-    private boolean openPlayListDialog = false;
+    private Artist searchedArtist;
     private String searchedArtistName;
+    private boolean openPlayListDialog = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.slide_left_in, R.anim.fadeout);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listify);
         initUI();
@@ -113,12 +117,11 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
             if(artistName.length() > 0){
                 artistName = artistName.trim();
                 searchedArtistName = artistName;
-                Intent i = new Intent(this, CreatePlaylistActivity.class);
-                i.putExtra(CreatePlaylistActivity.EXTRA_ARTIST_NAME, searchedArtistName);
-                startActivity(i);
+                ServiceRequest request = new ServiceRequest(getBaseContext(), this);
+                request.makeSuggestArtistNameRequest(Request.getArtist, artistName);
 
             }else{
-                Toast.makeText(getApplicationContext(), "Please enter an artist name", Toast.LENGTH_SHORT).show();
+                //TODO:show error
             }
         }else if(v.getId() == R.id.parent || v.getId() == R.id.images){
             suggestedArtistRL.setVisibility(View.GONE);
@@ -163,6 +166,64 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
 
 
             //TODO: set adapter
+        }else if(requestId == Request.getArtist){
+            //first we get the id of the searched artist, the we use that id to get related artists
+            searchedArtist = new Artist();
+            ArtistsResponse artistsResponse = (ArtistsResponse) response;
+            boolean foundSomeResultsButNameNotEqualsIgnoreCase = false;
+            if(artistsResponse != null && artistsResponse.getArtists() != null && artistsResponse.getArtists().getItems() != null && artistsResponse.getArtists().getItems().size() > 0){
+
+
+                for(Artist a : artistsResponse.getArtists().getItems()){
+                    foundSomeResultsButNameNotEqualsIgnoreCase = true;
+                    String aName = a.getName();
+                    if(aName != null){
+                        aName = aName.trim();
+                        if (aName.equalsIgnoreCase(searchedArtistName)){
+                            searchedArtist = a;
+                            break;
+                        }
+                    }
+                }
+            }else{
+                Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+            }
+
+            if(searchedArtist != null && searchedArtist.getId() != null && searchedArtist.getId().length() > 0){
+                ServiceRequest request = new ServiceRequest(getBaseContext(), listener);
+                request.makeGetRelatedArtistsRequest(Request.getRelatedArtists, searchedArtist.getId());
+            }else if(foundSomeResultsButNameNotEqualsIgnoreCase){
+                if(artistsResponse.getArtists() != null && artistsResponse.getArtists().getItems() != null && artistsResponse.getArtists().getItems().size() > 0){
+                    searchedArtist = artistsResponse.getArtists().getItems().get(0);
+                    ServiceRequest request = new ServiceRequest(getBaseContext(), listener);
+                    if(searchedArtist != null && searchedArtist.getId() != null && searchedArtist.getId().length() > 0) {
+                        request.makeGetRelatedArtistsRequest(Request.getRelatedArtists, searchedArtist.getId());
+                    }else {
+                        Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }else if(requestId == Request.getRelatedArtists){
+            RelatedArtistsResponse relatedArtistsResponse = (RelatedArtistsResponse)response;
+            if(relatedArtistsResponse != null){
+                if(relatedArtistsResponse.getArtists() != null && relatedArtistsResponse.getArtists().size() > 0){
+                    ArrayList<String> relatedArtistIds = new ArrayList<String>();
+                    for(Artist a : relatedArtistsResponse.getArtists()){
+                        if(a.getId() != null) {
+                            relatedArtistIds.add(a.getId());
+                        }
+                    }
+                    Intent i = new Intent(this, CreatePlaylistActivity.class);
+                    i.putStringArrayListExtra(CreatePlaylistActivity.EXTRA_RELATED_ARTISTS, relatedArtistIds);
+                    startActivity(i);
+                }else {
+                    Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+
+                }
+            }else {
+                Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+
+            }
         }
 
     }

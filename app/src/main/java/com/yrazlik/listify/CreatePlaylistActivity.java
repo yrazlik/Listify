@@ -1,8 +1,10 @@
 package com.yrazlik.listify;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -13,9 +15,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.Spotify;
@@ -24,12 +26,9 @@ import com.yrazlik.listify.connection.ResponseListener;
 import com.yrazlik.listify.connection.ServiceRequest;
 import com.yrazlik.listify.connection.request.Request;
 import com.yrazlik.listify.connection.response.AddTracksToPlaylistResponse;
-import com.yrazlik.listify.connection.response.ArtistsResponse;
 import com.yrazlik.listify.connection.response.CreatePlaylistResponse;
-import com.yrazlik.listify.connection.response.RelatedArtistsResponse;
 import com.yrazlik.listify.connection.response.TopTracksResponse;
 import com.yrazlik.listify.connection.response.UserProfileResponse;
-import com.yrazlik.listify.data.Artist;
 import com.yrazlik.listify.data.Track;
 
 import java.util.ArrayList;
@@ -41,12 +40,10 @@ import java.util.Random;
 public class CreatePlaylistActivity extends Activity implements ResponseListener, View.OnClickListener{
 
     public static String EXTRAS = "EXTRAS";
-    public static String EXTRA_ARTIST_NAME = "ARTIST_NAME";
     public static String EXTRA_RELATED_ARTISTS = "RELATED_ARTISTS";
     private ResponseListener listener = this;
     private Context mContext;
     private ListView playList;
-    private TextView percentage;
     private PlayListAdapter playListAdapter;
     private ArrayList<String> relatedArtists;
     private ArrayList<Track> selectedTracks;
@@ -57,9 +54,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     private Track nowPlayingTrack;
     private RelativeLayout loadingLayout;
     private ImageView dot1, dot2, dot3;
-    private String artistName;
     private boolean showDots = true;
-    private Artist searchedArtist;
 
 
     int time = 0;
@@ -68,20 +63,17 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.slide_bottom_in, 0);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist);
         selectedTracks = new ArrayList<Track>();
         if(getIntent() != null && getIntent().getExtras() != null){
             Bundle b = getIntent().getExtras();
             relatedArtists = (ArrayList<String>)b.get(EXTRA_RELATED_ARTISTS);
-            artistName = (String)b.get(EXTRA_ARTIST_NAME);
         }
         initUI();
     }
 
     private void initUI(){
-        percentage = (TextView)findViewById(R.id.percentage);
         loadingLayout = (RelativeLayout)findViewById(R.id.loadingLayout);
         dot1 = (ImageView)findViewById(R.id.dot1);
         dot2 = (ImageView)findViewById(R.id.dot2);
@@ -89,41 +81,37 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
         dot2.setVisibility(View.INVISIBLE);
         dot3.setVisibility(View.INVISIBLE);
 
-            CountDownTimer t = new CountDownTimer(8000, 400) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    if(time%3 == 0){
-                        dot1.setVisibility(View.VISIBLE);
-                        dot2.setVisibility(View.INVISIBLE);
-                        dot3.setVisibility(View.INVISIBLE);
-                    }else if(time%3 == 1){
-                        dot1.setVisibility(View.VISIBLE);
-                        dot2.setVisibility(View.VISIBLE);
-                        dot3.setVisibility(View.INVISIBLE);
-                    }else{
-                        dot1.setVisibility(View.VISIBLE);
-                        dot2.setVisibility(View.VISIBLE);
-                        dot3.setVisibility(View.VISIBLE);
-                    }
-
-                    if(selectedTracks != null) {
-                        percentage.setText("%" + (selectedTracks.size() * 4) + "");
-                    }
-
-                    time++;
-
+        CountDownTimer t = new CountDownTimer(6000, 600) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if(time%3 == 0){
+                    dot1.setVisibility(View.VISIBLE);
+                    dot2.setVisibility(View.INVISIBLE);
+                    dot3.setVisibility(View.INVISIBLE);
+                }else if(time%3 == 1){
+                    dot1.setVisibility(View.VISIBLE);
+                    dot2.setVisibility(View.VISIBLE);
+                    dot3.setVisibility(View.INVISIBLE);
+                }else{
+                    dot1.setVisibility(View.VISIBLE);
+                    dot2.setVisibility(View.VISIBLE);
+                    dot3.setVisibility(View.VISIBLE);
                 }
 
-                @Override
-                public void onFinish() {
-                    if(selectedTracks.size() >= 20){
-                        loadingLayout.setVisibility(View.GONE);
-                    }else {
-                        getTopTracks();
-                        start();
-                    }
+                time++;
+
+            }
+
+            @Override
+            public void onFinish() {
+                if(selectedTracks.size() >= 20){
+                    loadingLayout.setVisibility(View.GONE);
+                }else {
+                    getTopTracks();
+                    start();
                 }
-            };
+            }
+        };
 
 
         t.start();
@@ -186,12 +174,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
         });
         playListAdapter = new PlayListAdapter(this, R.layout.list_row_playlist, selectedTracks);
         playList.setAdapter(playListAdapter);
-        getRelatedArtists();
-    }
-
-    private void getRelatedArtists(){
-        ServiceRequest request = new ServiceRequest(getBaseContext(), this);
-        request.makeSuggestArtistNameRequest(Request.getArtist, artistName);
+        getTopTracks();
     }
 
     private void getTopTracks(){
@@ -204,64 +187,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
 
     @Override
     public void onSuccess(int requestId, Object response) {
-        if(requestId == Request.getArtist){
-            //first we get the id of the searched artist, the we use that id to get related artists
-            searchedArtist = new Artist();
-            ArtistsResponse artistsResponse = (ArtistsResponse) response;
-            boolean foundSomeResultsButNameNotEqualsIgnoreCase = false;
-            if(artistsResponse != null && artistsResponse.getArtists() != null && artistsResponse.getArtists().getItems() != null && artistsResponse.getArtists().getItems().size() > 0){
-
-
-                for(Artist a : artistsResponse.getArtists().getItems()){
-                    foundSomeResultsButNameNotEqualsIgnoreCase = true;
-                    String aName = a.getName();
-                    if(aName != null){
-                        aName = aName.trim();
-                        if (aName.equalsIgnoreCase(artistName)){
-                            searchedArtist = a;
-                            break;
-                        }
-                    }
-                }
-            }else{
-                Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
-            }
-
-            if(searchedArtist != null && searchedArtist.getId() != null && searchedArtist.getId().length() > 0){
-                ServiceRequest request = new ServiceRequest(getBaseContext(), listener);
-                request.makeGetRelatedArtistsRequest(Request.getRelatedArtists, searchedArtist.getId());
-            }else if(foundSomeResultsButNameNotEqualsIgnoreCase){
-                if(artistsResponse.getArtists() != null && artistsResponse.getArtists().getItems() != null && artistsResponse.getArtists().getItems().size() > 0){
-                    searchedArtist = artistsResponse.getArtists().getItems().get(0);
-                    ServiceRequest request = new ServiceRequest(getBaseContext(), listener);
-                    if(searchedArtist != null && searchedArtist.getId() != null && searchedArtist.getId().length() > 0) {
-                        request.makeGetRelatedArtistsRequest(Request.getRelatedArtists, searchedArtist.getId());
-                    }else {
-                        Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        }else if(requestId == Request.getRelatedArtists){
-            relatedArtists = new ArrayList<String>();
-            RelatedArtistsResponse relatedArtistsResponse = (RelatedArtistsResponse)response;
-            if(relatedArtistsResponse != null){
-                if(relatedArtistsResponse.getArtists() != null && relatedArtistsResponse.getArtists().size() > 0){
-                    relatedArtists = new ArrayList<String>();
-                    for(Artist a : relatedArtistsResponse.getArtists()){
-                        if(a.getId() != null) {
-                            relatedArtists.add(a.getId());
-                        }
-                    }
-                    getRelatedArtists();
-                }else {
-                    Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
-
-                }
-            }else {
-                Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
-
-            }
-        }else if(requestId == Request.getTopTracks){
+        if(requestId == Request.getTopTracks){
             TopTracksResponse topTracksResponse = (TopTracksResponse)response;
             ArrayList<Track> tracks = topTracksResponse.getTracks();
             if(tracks != null && tracks.size() > 0) {
@@ -294,7 +220,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
             CreatePlaylistResponse createPlaylistResponse = (CreatePlaylistResponse)response;
             savedPlaylistResponse = createPlaylistResponse;
             ServiceRequest request = new ServiceRequest(this, listener);
-           String jsonData = "{\"uris\": [";
+            String jsonData = "{\"uris\": [";
             for(Track t : selectedTracks){
                 jsonData += "\"" + t.getUri() + "\"" + ",";
             }
@@ -330,11 +256,5 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(0, R.anim.slide_top_out);
     }
 }
