@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/playlist_row_bg">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/playlist_row_bg">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,9 +15,46 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/buttonsLayout"
             android:layout_marginBottom="10dp"
-            android:dividerHeight="0.5dp"
             android:divider="@drawable/divider"
+            android:dividerHeight="0.5dp"
             android:listSelector="@android:color/transparent"></ListView>
+
+        <RelativeLayout
+            android:id="@+id/dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="150dp"
+            android:minHeight="150dp"
+            android:padding="30dp"
+            android:visibility="gone"
+            android:background="@color/transparent_dialog_bg"
+            android:layout_centerInParent="true">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
+                <ImageView
+                    android:id="@+id/dialogImage"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/tick"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:text="Playlist saved succesfuly"
+                    android:layout_below="@+id/dialogImage"
+                    android:layout_marginTop="10dp"
+                    android:textSize="16sp"
+                    android:layout_centerHorizontal="true"
+                    android:textStyle="bold"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/buttonsLayout"
@@ -33,38 +70,38 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:minHeight="35dp"
-                android:textSize="12sp"
                 android:background="@drawable/selector_listifiy_button_small"
+                android:minHeight="35dp"
                 android:singleLine="true"
                 android:text="@string/create_new"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:textSize="12sp"/>
 
             <Button
                 android:id="@+id/buttonSave"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="35dp"
                 android:layout_marginLeft="5dp"
-                android:textSize="12sp"
-                android:singleLine="true"
-                android:textColor="@android:color/white"
+                android:layout_weight="1"
                 android:background="@drawable/selector_listifiy_button_small"
-                android:text="@string/save" />
+                android:minHeight="35dp"
+                android:singleLine="true"
+                android:text="@string/save"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"/>
 
             <Button
                 android:id="@+id/buttonOpenInSpotify"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minHeight="35dp"
                 android:layout_marginLeft="5dp"
-                android:textSize="12sp"
-                android:textColor="@android:color/white"
-                android:singleLine="true"
+                android:layout_weight="1"
                 android:background="@drawable/selector_listifiy_button_small"
-                android:text="@string/open_in_spotify" />
+                android:minHeight="35dp"
+                android:singleLine="true"
+                android:text="@string/open_in_spotify"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"/>
 
         </LinearLayout>
     </RelativeLayout>
@@ -73,7 +110,8 @@
         android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/listify_black_bg">
+        android:background="@color/listify_black_bg"
+        android:visibility="visible">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -93,11 +131,11 @@
                 android:textStyle="bold"/>
 
             <RelativeLayout
-                android:layout_below="@+id/text"
-                android:layout_marginTop="30dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true">
+                android:layout_below="@+id/text"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp">
 
                 <ImageView
                     android:id="@+id/dot1"
@@ -108,19 +146,19 @@
 
                 <ImageView
                     android:id="@+id/dot2"
-                    android:layout_toRightOf="@+id/dot1"
-                    android:layout_marginLeft="10dp"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/dot1"
                     android:background="@drawable/dot2"
                     />
 
                 <ImageView
                     android:id="@+id/dot3"
-                    android:layout_toRightOf="@+id/dot2"
-                    android:layout_marginLeft="10dp"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/dot2"
                     android:background="@drawable/dot2"
                     />
 

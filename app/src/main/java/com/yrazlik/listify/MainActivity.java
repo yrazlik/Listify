@@ -3,11 +3,8 @@ package com.yrazlik.listify;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -110,61 +107,7 @@ public class MainActivity extends Activity implements
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.buttonStart){
-           // startLoginActivity();
-
-
-            Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_in);
-            anim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    Handler h = new Handler();
-                    h.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Animation fadeOut = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_out);
-                            fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                                @Override
-                                public void onAnimationStart(Animation animation) {
-
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animation animation) {
-                                    dialog.setVisibility(View.GONE);
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animation animation) {
-
-                                }
-                            });
-                            dialog.setAnimation(fadeOut);
-                            dialog.startAnimation(fadeOut);
-                        }
-                    }, 2000);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-
-            dialog.setAnimation(anim);
-            dialog.setVisibility(View.VISIBLE);
-            dialog.startAnimation(anim);
-
-
-
-            /*CustomDialogFragment d = new CustomDialogFragment();
-            FragmentManager fm = getFragmentManager();
-            String tag = "";
-            d.show(fm, tag);*/
+           startLoginActivity();
         }
     }
 }

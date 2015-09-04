@@ -8,6 +8,7 @@
     <color name="playlist_item_selected">#45454A</color>
     <color name="playlist_row_bg">#0B0C0D</color>
     <color name="divider_color">#717475</color>
+    <color name="transparent_dialog_bg">#8045454A</color>
 
 
 </resources>
