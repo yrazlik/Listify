@@ -125,6 +125,18 @@
                     android:background="@drawable/dot2"
                     />
 
+                <TextView
+                    android:id="@+id/percentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="%0"
+                    android:textSize="20sp"
+                    android:layout_below="@+id/dot3"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp"/>
+
 
             </RelativeLayout>
 

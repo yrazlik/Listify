@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.spotify.sdk.android.player.Config;
@@ -45,6 +46,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     private ResponseListener listener = this;
     private Context mContext;
     private ListView playList;
+    private TextView percentage;
     private PlayListAdapter playListAdapter;
     private ArrayList<String> relatedArtists;
     private ArrayList<Track> selectedTracks;
@@ -79,6 +81,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     }
 
     private void initUI(){
+        percentage = (TextView)findViewById(R.id.percentage);
         loadingLayout = (RelativeLayout)findViewById(R.id.loadingLayout);
         dot1 = (ImageView)findViewById(R.id.dot1);
         dot2 = (ImageView)findViewById(R.id.dot2);
@@ -86,7 +89,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
         dot2.setVisibility(View.INVISIBLE);
         dot3.setVisibility(View.INVISIBLE);
 
-            CountDownTimer t = new CountDownTimer(6000, 600) {
+            CountDownTimer t = new CountDownTimer(8000, 400) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     if(time%3 == 0){
@@ -101,6 +104,10 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
                         dot1.setVisibility(View.VISIBLE);
                         dot2.setVisibility(View.VISIBLE);
                         dot3.setVisibility(View.VISIBLE);
+                    }
+
+                    if(selectedTracks != null) {
+                        percentage.setText("%" + (selectedTracks.size() * 4) + "");
                     }
 
                     time++;
