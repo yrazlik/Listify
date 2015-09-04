@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -55,6 +56,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     private RelativeLayout loadingLayout;
     private ImageView dot1, dot2, dot3;
     private boolean showDots = true;
+    private TextView percentage;
 
 
     int time = 0;
@@ -74,6 +76,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     }
 
     private void initUI(){
+        percentage = (TextView)findViewById(R.id.percentage);
         loadingLayout = (RelativeLayout)findViewById(R.id.loadingLayout);
         dot1 = (ImageView)findViewById(R.id.dot1);
         dot2 = (ImageView)findViewById(R.id.dot2);
@@ -204,6 +207,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
 
                 if(selectedTracks.size() < 25){
                     selectedTracks.add(t);
+                    percentage.setText("%" + selectedTracks.size()*5);
                 }
                 playListAdapter.notifyDataSetChanged();
 

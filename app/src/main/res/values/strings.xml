@@ -18,4 +18,9 @@
     <string name="please_wait">Please Wait While We Create Your Playlist</string>
     <string name="playlist_created">Playlist created</string>
     <string name="succesfully">succesfully</string>
+    <string name="ready_to_create">Ready to Create.</string>
+    <string name="please_wait_2">Please Wait.</string>
+    <string name="could_not_find">Could not find</string>
+    <string name="any_songs">any related tracks.</string>
+
 </resources>

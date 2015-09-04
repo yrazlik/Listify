@@ -3,9 +3,12 @@ package com.yrazlik.listify;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,6 +47,7 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
     private Artist searchedArtist;
     private String searchedArtistName;
     private boolean openPlayListDialog = false;
+    private RelativeLayout dialog, errorDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,8 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
     }
 
     private void initUI(){
+        dialog = (RelativeLayout)findViewById(R.id.dialog);
+        errorDialog = (RelativeLayout)findViewById(R.id.errorDialog);
         parent = (RelativeLayout)findViewById(R.id.parent);
         images = (LinearLayout)findViewById(R.id.images);
         parent.setOnClickListener(this);
@@ -81,7 +87,7 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
         edittextArtist.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
+                if (!hasFocus) {
                     suggestedArtistLV.setVisibility(View.GONE);
                 }
             }
@@ -95,10 +101,10 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s != null && s.toString().length() >= 3){
+                if (s != null && s.toString().length() >= 3) {
                     ServiceRequest request = new ServiceRequest(getBaseContext(), listener);
                     request.makeSuggestArtistNameRequest(Request.getSuggestedArtists, s.toString());
-                }else if(s != null && s.length() < 3){
+                } else if (s != null && s.length() < 3) {
                     suggestedArtistRL.setVisibility(View.GONE);
                 }
             }
@@ -117,6 +123,9 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
             if(artistName.length() > 0){
                 artistName = artistName.trim();
                 searchedArtistName = artistName;
+                suggestedArtistRL.setVisibility(View.GONE);
+                buttonCreateListify.setEnabled(false);
+                showDialog();
                 ServiceRequest request = new ServiceRequest(getBaseContext(), this);
                 request.makeSuggestArtistNameRequest(Request.getArtist, artistName);
 
@@ -127,6 +136,67 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
             suggestedArtistRL.setVisibility(View.GONE);
         }
     }
+
+    private void showErrorDialog(){
+        Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Animation anim = AnimationUtils.loadAnimation(ListifyActivity.this, R.anim.anim_in);
+                anim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        hideErrorDialog();
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                errorDialog.setAnimation(anim);
+                errorDialog.setVisibility(View.VISIBLE);
+                errorDialog.startAnimation(anim);
+            }
+        }, 750);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        buttonCreateListify.setEnabled(true);
+    }
+
+    private void showDialog(){
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_in);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        dialog.setAnimation(anim);
+        dialog.setVisibility(View.VISIBLE);
+        dialog.startAnimation(anim);
+    }
+
 
     @Override
     public void onSuccess(int requestId, Object response) {
@@ -165,7 +235,7 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
             }
 
 
-            //TODO: set adapter
+
         }else if(requestId == Request.getArtist){
             //first we get the id of the searched artist, the we use that id to get related artists
             searchedArtist = new Artist();
@@ -186,7 +256,9 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
                     }
                 }
             }else{
-                Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+                buttonCreateListify.setEnabled(true);
+                hideDialog();
+                showErrorDialog();
             }
 
             if(searchedArtist != null && searchedArtist.getId() != null && searchedArtist.getId().length() > 0){
@@ -199,7 +271,9 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
                     if(searchedArtist != null && searchedArtist.getId() != null && searchedArtist.getId().length() > 0) {
                         request.makeGetRelatedArtistsRequest(Request.getRelatedArtists, searchedArtist.getId());
                     }else {
-                        Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+                        buttonCreateListify.setEnabled(true);
+                        hideDialog();
+                        showErrorDialog();
                     }
                 }
             }
@@ -213,19 +287,96 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
                             relatedArtistIds.add(a.getId());
                         }
                     }
+                    if(dialog != null){
+                        dialog.setVisibility(View.GONE);
+                    }
                     Intent i = new Intent(this, CreatePlaylistActivity.class);
                     i.putStringArrayListExtra(CreatePlaylistActivity.EXTRA_RELATED_ARTISTS, relatedArtistIds);
                     startActivity(i);
                 }else {
-                    Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+                    buttonCreateListify.setEnabled(true);
+                    hideDialog();
+                    showErrorDialog();
 
                 }
             }else {
-                Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT).show();
+                buttonCreateListify.setEnabled(true);
+                hideDialog();
+                showErrorDialog();
 
             }
         }
 
+    }
+
+    private void hideDialog(){
+        Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Animation anim = AnimationUtils.loadAnimation(ListifyActivity.this, R.anim.anim_out);
+                anim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        if (dialog != null) {
+                            dialog.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                dialog.setAnimation(anim);
+                dialog.startAnimation(anim);
+            }
+        },500);
+    }
+
+    private void hideErrorDialog(){
+        Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Animation anim = AnimationUtils.loadAnimation(ListifyActivity.this, R.anim.anim_out);
+                anim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        if (errorDialog != null) {
+                            errorDialog.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                errorDialog.setAnimation(anim);
+                errorDialog.startAnimation(anim);
+            }
+        },2000);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(dialog != null){
+            dialog.setVisibility(View.GONE);
+        }
     }
 
     @Override
