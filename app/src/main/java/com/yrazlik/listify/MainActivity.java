@@ -107,8 +107,7 @@ public class MainActivity extends Activity implements
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.buttonStart){
-           //startLoginActivity();
-            Utils.showSuccesfulDialog(parent, getApplicationContext());
+           startLoginActivity();//Utils.showSuccesfulDialog(parent, getApplicationContext());
         }
     }
 }

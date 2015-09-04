@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 /**
  * Created by yrazlik on 9/4/15.
@@ -64,7 +64,10 @@ public class Utils {
 
     public static void showSuccesfulDialog(ViewGroup parent, final Context context){
         LayoutInflater inflater = (LayoutInflater)   context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final LinearLayout dialog = (LinearLayout)inflater.inflate(R.layout.dialog_succesful, null);
+        final RelativeLayout dialog = (RelativeLayout)inflater.inflate(R.layout.dialog_succesful, null);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        dialog.setLayoutParams(params);
         parent.addView(dialog);
 
         Animation anim = AnimationUtils.loadAnimation(context, R.anim.anim_in);
