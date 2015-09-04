@@ -19,43 +19,6 @@
             android:dividerHeight="0.5dp"
             android:listSelector="@android:color/transparent"></ListView>
 
-        <RelativeLayout
-            android:id="@+id/dialog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="150dp"
-            android:minHeight="150dp"
-            android:padding="30dp"
-            android:visibility="gone"
-            android:background="@color/transparent_dialog_bg"
-            android:layout_centerInParent="true">
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true">
-
-                <ImageView
-                    android:id="@+id/dialogImage"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/tick"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:text="Playlist saved succesfuly"
-                    android:layout_below="@+id/dialogImage"
-                    android:layout_marginTop="10dp"
-                    android:textSize="16sp"
-                    android:layout_centerHorizontal="true"
-                    android:textStyle="bold"/>
-
-            </RelativeLayout>
-
-        </RelativeLayout>
-
         <LinearLayout
             android:id="@+id/buttonsLayout"
             android:layout_width="match_parent"

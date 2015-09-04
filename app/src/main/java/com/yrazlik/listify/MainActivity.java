@@ -22,7 +22,7 @@ public class MainActivity extends Activity implements
 
     private static final int REQUEST_CODE = 1337;
     private Button buttonStart;
-    private RelativeLayout dialog;
+    private RelativeLayout parent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class MainActivity extends Activity implements
     private void initUI(){
         buttonStart = (Button) findViewById(R.id.buttonStart);
         buttonStart.setOnClickListener(this);
-        dialog = (RelativeLayout)findViewById(R.id.dialog);
+        parent = (RelativeLayout)findViewById(R.id.parent);
     }
 
     private void startLoginActivity(){
@@ -107,7 +107,8 @@ public class MainActivity extends Activity implements
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.buttonStart){
-           startLoginActivity();
+           //startLoginActivity();
+            Utils.showSuccesfulDialog(parent, getApplicationContext());
         }
     }
 }
