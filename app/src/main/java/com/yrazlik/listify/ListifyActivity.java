@@ -138,33 +138,35 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
     }
 
     private void showErrorDialog(){
-        Handler h = new Handler();
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Animation anim = AnimationUtils.loadAnimation(ListifyActivity.this, R.anim.anim_in);
-                anim.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
+        try {
+            Handler h = new Handler();
+            h.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Animation anim = AnimationUtils.loadAnimation(ListifyActivity.this, R.anim.anim_in);
+                    anim.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        hideErrorDialog();
-                    }
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            hideErrorDialog();
+                        }
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
 
-                    }
-                });
+                        }
+                    });
 
-                errorDialog.setAnimation(anim);
-                errorDialog.setVisibility(View.VISIBLE);
-                errorDialog.startAnimation(anim);
-            }
-        }, 750);
+                    errorDialog.setAnimation(anim);
+                    errorDialog.setVisibility(View.VISIBLE);
+                    errorDialog.startAnimation(anim);
+                }
+            }, 750);
+        }catch (Exception ignored){}
     }
 
     @Override
@@ -174,27 +176,29 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
     }
 
     private void showDialog(){
-        Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_in);
-        anim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+        try {
+            Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_in);
+            anim.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
+                @Override
+                public void onAnimationEnd(Animation animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+                @Override
+                public void onAnimationRepeat(Animation animation) {
 
-            }
-        });
+                }
+            });
 
-        dialog.setAnimation(anim);
-        dialog.setVisibility(View.VISIBLE);
-        dialog.startAnimation(anim);
+            dialog.setAnimation(anim);
+            dialog.setVisibility(View.VISIBLE);
+            dialog.startAnimation(anim);
+        }catch (Exception ignored){}
     }
 
 
@@ -310,65 +314,69 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
     }
 
     private void hideDialog(){
-        Handler h = new Handler();
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Animation anim = AnimationUtils.loadAnimation(ListifyActivity.this, R.anim.anim_out);
-                anim.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
+        try {
+            Handler h = new Handler();
+            h.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Animation anim = AnimationUtils.loadAnimation(ListifyActivity.this, R.anim.anim_out);
+                    anim.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
 
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        if (dialog != null) {
-                            dialog.setVisibility(View.GONE);
                         }
-                    }
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            if (dialog != null) {
+                                dialog.setVisibility(View.GONE);
+                            }
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
 
-                dialog.setAnimation(anim);
-                dialog.startAnimation(anim);
-            }
-        },500);
+                        }
+                    });
+
+                    dialog.setAnimation(anim);
+                    dialog.startAnimation(anim);
+                }
+            }, 500);
+        }catch (Exception ignored){}
     }
 
     private void hideErrorDialog(){
-        Handler h = new Handler();
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Animation anim = AnimationUtils.loadAnimation(ListifyActivity.this, R.anim.anim_out);
-                anim.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
+        try {
+            Handler h = new Handler();
+            h.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Animation anim = AnimationUtils.loadAnimation(ListifyActivity.this, R.anim.anim_out);
+                    anim.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
 
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        if (errorDialog != null) {
-                            errorDialog.setVisibility(View.GONE);
                         }
-                    }
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            if (errorDialog != null) {
+                                errorDialog.setVisibility(View.GONE);
+                            }
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
 
-                errorDialog.setAnimation(anim);
-                errorDialog.startAnimation(anim);
-            }
-        },2000);
+                        }
+                    });
+
+                    errorDialog.setAnimation(anim);
+                    errorDialog.startAnimation(anim);
+                }
+            }, 2000);
+        }catch (Exception ignored){}
     }
 
     @Override
