@@ -259,6 +259,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
                 playListAdapter.notifyDataSetChanged();
 
             }else {
+                Toast.makeText(getApplicationContext(), getString(R.string.could_not_find) + " " + getString(R.string.any_songs), Toast.LENGTH_LONG).show();
                 finish();
             }
         }else if(requestId == Request.getUserProfile){
