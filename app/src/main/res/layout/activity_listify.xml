@@ -31,7 +31,7 @@
                     android:id="@+id/img1"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:background="@drawable/kkk"/>
+                    android:background="@drawable/keyboard"/>
 
                 <TextView
                     android:layout_below="@+id/img1"

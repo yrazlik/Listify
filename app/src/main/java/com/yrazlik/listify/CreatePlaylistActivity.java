@@ -263,9 +263,6 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
                 }
                 playListAdapter.notifyDataSetChanged();
 
-            }else {
-                Toast.makeText(getApplicationContext(), getString(R.string.could_not_find) + " " + getString(R.string.any_songs), Toast.LENGTH_LONG).show();
-                finish();
             }
         }else if(requestId == Request.getUserProfile){
             UserProfileResponse userProfileResponse = (UserProfileResponse)response;
@@ -370,9 +367,6 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
 
     @Override
     protected void onDestroy() {
-        if(AppData.mPlayer != null) {
-            Spotify.destroyPlayer(this);
-        }
         super.onDestroy();
     }
 

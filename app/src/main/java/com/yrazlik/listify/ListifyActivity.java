@@ -21,6 +21,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.spotify.sdk.android.player.Spotify;
 import com.yrazlik.listify.adapters.SuggestedArtistsAdapter;
 import com.yrazlik.listify.connection.ResponseListener;
 import com.yrazlik.listify.connection.ServiceRequest;
@@ -142,7 +143,7 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
                 try {
                     mTracker.send(new HitBuilders.EventBuilder()
                             .setCategory("Action")
-                            .setAction(artistName)
+                            .setAction(artistName.toLowerCase())
                             .build());
                 }catch (Exception ignored){}
 
@@ -313,6 +314,7 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
                     if(dialog != null){
                         dialog.setVisibility(View.GONE);
                     }
+                    relatedArtistIds.add(searchedArtist.getId());
                     Intent i = new Intent(this, CreatePlaylistActivity.class);
                     i.putStringArrayListExtra(CreatePlaylistActivity.EXTRA_RELATED_ARTISTS, relatedArtistIds);
                     startActivity(i);
@@ -431,5 +433,14 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
             mTracker.setScreenName("SearchPage");
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }catch (Exception ignored){}
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(AppData.mPlayer != null){
+            AppData.mPlayer.pause();
+        }
+        Spotify.destroyPlayer(this);
+        super.onDestroy();
     }
 }

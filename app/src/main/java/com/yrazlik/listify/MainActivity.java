@@ -19,6 +19,7 @@ import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.PlayerNotificationCallback;
 import com.spotify.sdk.android.player.PlayerState;
+import com.spotify.sdk.android.player.Spotify;
 
 
 public class MainActivity extends Activity implements
@@ -109,11 +110,6 @@ public class MainActivity extends Activity implements
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void onClick(View v) {
         if(v.getId() == R.id.buttonStart){
            startLoginActivity();
@@ -129,5 +125,15 @@ public class MainActivity extends Activity implements
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }catch (Exception ignored){}
     }
+
+    @Override
+    protected void onDestroy() {
+        if(AppData.mPlayer != null){
+            AppData.mPlayer.pause();
+        }
+        Spotify.destroyPlayer(this);
+        super.onDestroy();
+    }
+
 
 }
