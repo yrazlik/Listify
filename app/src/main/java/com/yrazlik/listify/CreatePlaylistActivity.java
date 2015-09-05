@@ -19,6 +19,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.Player;
@@ -34,6 +36,7 @@ import com.yrazlik.listify.connection.response.UserProfileResponse;
 import com.yrazlik.listify.data.Track;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -59,6 +62,8 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     private TextView percentage;
     private ProgressBar progress;
     private RelativeLayout parent;
+    private boolean backButtonCanBeUsed = false;
+    private ServiceRequest topTracksRequest;
 
 
     int time = 0;
@@ -74,6 +79,9 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
             Bundle b = getIntent().getExtras();
             relatedArtists = (ArrayList<String>)b.get(EXTRA_RELATED_ARTISTS);
         }
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
         initUI();
     }
 
@@ -88,7 +96,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
         dot2.setVisibility(View.INVISIBLE);
         dot3.setVisibility(View.INVISIBLE);
 
-        CountDownTimer t = new CountDownTimer(6000, 600) {
+        CountDownTimer t = new CountDownTimer(4800, 600) {
             @Override
             public void onTick(long millisUntilFinished) {
                 if(time%3 == 0){
@@ -111,8 +119,12 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
 
             @Override
             public void onFinish() {
+                topTracksRequest.cancelAllTopTracksRequests();
                 if(selectedTracks.size() >= 20){
                     loadingLayout.setVisibility(View.GONE);
+                    Collections.shuffle(selectedTracks);
+                    playListAdapter.notifyDataSetChanged();
+                    backButtonCanBeUsed = true;
                 }else {
                     getTopTracks();
                     start();
@@ -215,10 +227,9 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     }
 
     private void getTopTracks(){
+        topTracksRequest = new ServiceRequest(getBaseContext(), listener);
         for(String id : relatedArtists){
-            ServiceRequest request = new ServiceRequest(getBaseContext(), listener);
-            request.makeGetArtistsTopTracksRequest(Request.getTopTracks, id);
-
+            topTracksRequest.makeGetArtistsTopTracksRequest(Request.getTopTracks, id);
         }
     }
 
@@ -314,7 +325,11 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if(!backButtonCanBeUsed){
+
+        }else {
+            super.onBackPressed();
+        }
     }
 
     @Override

@@ -38,10 +38,17 @@ public class ServiceRequest {
     private ServiceRequest instance;
     private Context mContext;
     private ResponseListener mListener;
+    private RequestQueue topTracksRequestQueue;
+    public static String TAG_TOP_TRACKS = "TAG_TOP_TRACKS";
+
+    public void cancelAllTopTracksRequests(){
+        topTracksRequestQueue.cancelAll(TAG_TOP_TRACKS);
+    }
 
     public ServiceRequest(Context context, ResponseListener listener) {
         this.mContext = context;
         this.mListener = listener;
+        topTracksRequestQueue = Volley.newRequestQueue(mContext);
     }
 
     public void makeSuggestArtistNameRequest(final int requestId, String artistName) {
@@ -129,7 +136,7 @@ public class ServiceRequest {
     }
 
     public void makeGetArtistsTopTracksRequest(final int requestId, String artistId) {
-        RequestQueue queue = Volley.newRequestQueue(mContext);
+
         String url = AppConstants.API_BASE_URL + AppConstants.ARTISTS_BASE_URL + artistId + "/top-tracks?country=US";
 
         // Request a string response from the provided URL.
@@ -152,8 +159,9 @@ public class ServiceRequest {
                 mListener.onFailure();
             }
         });
+        stringRequest.setTag(TAG_TOP_TRACKS);
         // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        topTracksRequestQueue.add(stringRequest);
     }
 
     public void makeGetUserProfileRequest(final int requestId) {

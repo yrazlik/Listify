@@ -17,6 +17,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.yrazlik.listify.adapters.SuggestedArtistsAdapter;
 import com.yrazlik.listify.connection.ResponseListener;
 import com.yrazlik.listify.connection.ServiceRequest;
@@ -53,6 +55,9 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listify);
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
         initUI();
     }
 
@@ -172,6 +177,8 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
     @Override
     protected void onResume() {
         super.onResume();
+        edittextArtist.setText("");
+        suggestedArtistRL.setVisibility(View.GONE);
         buttonCreateListify.setEnabled(true);
     }
 
