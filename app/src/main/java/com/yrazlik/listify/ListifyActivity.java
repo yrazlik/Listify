@@ -57,6 +57,7 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(R.anim.slide_left_in, 0);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listify);
         AdView mAdView = (AdView) findViewById(R.id.adView);

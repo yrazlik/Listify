@@ -74,6 +74,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(R.anim.slide_bottom_in, R.anim.fadeout);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist);
         selectedTracks = new ArrayList<Track>();
@@ -310,6 +311,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     public void onClick(View v) {
         if(v.getId() == R.id.buttonNew){
             finish();
+            overridePendingTransition(R.anim.fadein, R.anim.slide_top_out);
         }else if(v.getId() == R.id.buttonSave){
             //TODO: save playlist on spotify
             //First get user's id:
@@ -362,6 +364,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
 
         }else {
             super.onBackPressed();
+            overridePendingTransition(R.anim.fadein, R.anim.slide_top_out);
         }
     }
 
