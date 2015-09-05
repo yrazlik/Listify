@@ -3,6 +3,7 @@ package com.yrazlik.listify.connection;
 import android.content.Context;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -100,7 +101,11 @@ public class ServiceRequest {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mListener.onFailure();
+                if(error instanceof NoConnectionError){
+                    mListener.onNoConnection();
+                }else {
+                    mListener.onFailure();
+                }
             }
         });
         // Add the request to the RequestQueue.
@@ -128,7 +133,11 @@ public class ServiceRequest {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mListener.onFailure();
+                if(error instanceof NoConnectionError){
+                    mListener.onNoConnection();
+                }else {
+                    mListener.onFailure();
+                }
             }
         });
         // Add the request to the RequestQueue.
@@ -156,7 +165,11 @@ public class ServiceRequest {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mListener.onFailure();
+                if(error instanceof NoConnectionError){
+                    mListener.onNoConnection();
+                }else {
+                    mListener.onFailure();
+                }
             }
         });
         stringRequest.setTag(TAG_TOP_TRACKS);
@@ -187,7 +200,11 @@ public class ServiceRequest {
                 {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        mListener.onFailure();
+                        if(error instanceof NoConnectionError){
+                            mListener.onNoConnection();
+                        }else {
+                            mListener.onFailure();
+                        }
                     }
                 }
         ) {
@@ -230,7 +247,11 @@ public class ServiceRequest {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                if(error instanceof NoConnectionError){
+                    mListener.onNoConnection();
+                }else {
+                    mListener.onFailure();
+                }
             }
         }) {
             @Override
@@ -274,7 +295,11 @@ public class ServiceRequest {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                if(error instanceof NoConnectionError){
+                    mListener.onNoConnection();
+                }else {
+                    mListener.onFailure();
+                }
             }
         }) {
             @Override

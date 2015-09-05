@@ -7,4 +7,5 @@ public interface ResponseListener {
 
     public void onSuccess(int requestId, Object response);
     public void onFailure();
+    public void onNoConnection();
 }

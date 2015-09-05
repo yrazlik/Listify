@@ -14,5 +14,6 @@ public class AppConstants {
     public static final String USER_PROFILE_BASE_URL = "me/";
     public static final String USERS_BASE_URL = "users/";
     public static final String PLAYLISTS_BASE_URL = "playlists/";
+    public static final String GOOGLE_ANALYTICS_TRACKING_ID = "UA-52774268-9";
 
 }

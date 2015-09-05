@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.yrazlik.listify.adapters.SuggestedArtistsAdapter;
 import com.yrazlik.listify.connection.ResponseListener;
 import com.yrazlik.listify.connection.ServiceRequest;
@@ -50,6 +52,7 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
     private String searchedArtistName;
     private boolean openPlayListDialog = false;
     private RelativeLayout dialog, errorDialog;
+    private Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,9 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+        ListifyApplication application = (ListifyApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+        reportGoogleAnaytics();
         initUI();
     }
 
@@ -133,6 +139,12 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
                 showDialog();
                 ServiceRequest request = new ServiceRequest(getBaseContext(), this);
                 request.makeSuggestArtistNameRequest(Request.getArtist, artistName);
+                try {
+                    mTracker.send(new HitBuilders.EventBuilder()
+                            .setCategory("Action")
+                            .setAction(artistName)
+                            .build());
+                }catch (Exception ignored){}
 
             }else{
                 //TODO:show error
@@ -397,5 +409,27 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
     @Override
     public void onFailure() {
         suggestedArtistRL.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onNoConnection() {
+        buttonCreateListify.setEnabled(true);
+        try{
+            hideDialog();
+            Handler h = new Handler();
+            h.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Utils.showFadeOutDialog(parent, ListifyActivity.this, getString(R.string.please_check_your), getString(R.string.internet_connection), R.drawable.error);
+                }
+            }, 750);
+        }catch (Exception ignored){}
+    }
+
+    private void reportGoogleAnaytics(){
+        try {
+            mTracker.setScreenName("SearchPage");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }catch (Exception ignored){}
     }
 }

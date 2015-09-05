@@ -9,7 +9,7 @@
     <string name="create_new">New</string>
     <string name="save">Save</string>
     <string name="open_in_spotify">Open in Spotify</string>
-    <string name="errorAuthenticate">Authentication error. Please check your username and password.</string>
+    <string name="errorAuthenticate">Authentication error. Please check your username, password or internet connection.</string>
     <string name="enter_artist_or_track">Enter an artist.</string>
     <string name="wait_a_little">Wait a little bit....</string>
     <string name="enjoy_playlist">Enjoy your playlist!</string>
@@ -26,5 +26,10 @@
     <string name="an_error_occured"> An error occured</string>
     <string name="please_try_again"> Please try again.</string>
     <string name="banner_ad_unit_id">ca-app-pub-3219973945608696/4886254367</string>
-
+    <string name="you_need_to">You need to</string>
+    <string name="save_playlist_first">save playlist first</string>
+    <string name="spotify_not">Spotify is not</string>
+    <string name="installed">installed on device.</string>
+    <string name="please_check_your">Please check your</string>
+    <string name="internet_connection">internet connection.</string>
 </resources>

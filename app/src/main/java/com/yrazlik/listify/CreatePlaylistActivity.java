@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.Player;
@@ -64,10 +66,10 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
     private RelativeLayout parent;
     private boolean backButtonCanBeUsed = false;
     private ServiceRequest topTracksRequest;
-
+    private boolean saved = false;
 
     int time = 0;
-
+    private Tracker mTracker;
 
 
     @Override
@@ -82,6 +84,9 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+        ListifyApplication application = (ListifyApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+        reportGoogleAnaytics();
         initUI();
     }
 
@@ -285,6 +290,7 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
             AddTracksToPlaylistResponse addTracksToPlaylistResponse = new AddTracksToPlaylistResponse();
             newlyCreatedSnapshotId = addTracksToPlaylistResponse.getSnapshot_id();
             progress.setVisibility(View.GONE);
+            saved = true;
             Utils.showFadeOutDialog(parent, CreatePlaylistActivity.this, getString(R.string.playlist_saved), getString(R.string.succesfully), R.drawable.tick);
             buttonSave.setEnabled(true);
         }
@@ -314,14 +320,43 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
             progress.setVisibility(View.VISIBLE);
             ServiceRequest request = new ServiceRequest(this, listener);
             request.makeGetUserProfileRequest(Request.getUserProfile);
+            try {
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Action")
+                        .setAction("Save")
+                        .build());
+            }catch (Exception ignored){}
 
         }else if(v.getId() == R.id.buttonOpenInSpotify){
-            Intent intent = new Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH);
-            intent.setData(Uri.parse(
-                    savedPlaylistResponse.getNameValuePairs().getUri()));
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            try {
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Action")
+                        .setAction("OpenInSpotify")
+                        .build());
+            }catch (Exception ignored){}
+            if(saved) {
+                try {
+                    Intent intent = new Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH);
+                    intent.setData(Uri.parse(
+                            savedPlaylistResponse.getNameValuePairs().getUri()));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }catch (Exception e){
+                    Utils.showFadeOutDialog(parent, CreatePlaylistActivity.this, getString(R.string.spotify_not), getString(R.string.installed), R.drawable.error);
+                }
+            }else {
+                Utils.showFadeOutDialog(parent, CreatePlaylistActivity.this, getString(R.string.you_need_to), getString(R.string.save_playlist_first), R.drawable.error);
+            }
         }
+    }
+
+    @Override
+    public void onNoConnection() {
+        buttonSave.setEnabled(true);
+        progress.setVisibility(View.GONE);
+        try{
+            Utils.showFadeOutDialog(parent, CreatePlaylistActivity.this, getString(R.string.please_check_your), getString(R.string.internet_connection), R.drawable.error);
+        }catch (Exception ignored){}
     }
 
     @Override
@@ -339,5 +374,12 @@ public class CreatePlaylistActivity extends Activity implements ResponseListener
             Spotify.destroyPlayer(this);
         }
         super.onDestroy();
+    }
+
+    private void reportGoogleAnaytics(){
+        try {
+            mTracker.setScreenName("PlaylistPage");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }catch (Exception ignored){}
     }
 }

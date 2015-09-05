@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
@@ -25,6 +27,7 @@ public class MainActivity extends Activity implements
     private static final int REQUEST_CODE = 1337;
     private Button buttonStart;
     private RelativeLayout parent;
+    private Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,7 @@ public class MainActivity extends Activity implements
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
         initUI();
+        reportGoogleAnaytics();
     }
 
     private void initUI(){
@@ -116,4 +120,14 @@ public class MainActivity extends Activity implements
            //Utils.showFadeOutDialog(parent, getApplicationContext(), getString(R.string.playlist_created), getString(R.string.succesfully), R.drawable.tick);
         }
     }
+
+    private void reportGoogleAnaytics(){
+        try {
+            ListifyApplication application = (ListifyApplication) getApplication();
+            mTracker = application.getDefaultTracker();
+            mTracker.setScreenName("MainScreen");
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }catch (Exception ignored){}
+    }
+
 }
