@@ -6,15 +6,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -81,6 +84,16 @@ public class ListifyActivity extends Activity implements View.OnClickListener, R
         suggestedArtistRL = (RelativeLayout)findViewById(R.id.suggestedArtistsRL);
         suggestedArtistLV = (ListView)findViewById(R.id.suggestedArtistLV);
         buttonCreateListify.setOnClickListener(this);
+
+        edittextArtist.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    buttonCreateListify.performClick();
+                }
+                return false;
+            }
+        });
 
         suggestedArtistLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
