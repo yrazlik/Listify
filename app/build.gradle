@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace 'com.yrazlik.listify'
     compileSdkVersion 36
     buildToolsVersion "21.1.2"
 
@@ -27,16 +28,16 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // This library handles authentication and authorization
-    compile 'com.spotify.sdk:spotify-auth:1.0.0-beta10@aar'
+    implementation 'com.spotify.sdk:spotify-auth:1.0.0-beta10@aar'
 
     // This library handles music playback
-    compile 'com.spotify.sdk:spotify-player:1.0.0-beta10@aar'
+    implementation 'com.spotify.sdk:spotify-player:1.0.0-beta10@aar'
 
-    compile 'com.android.support:appcompat-v7:22.1.0'
-    compile 'com.mcxiaoke.volley:library:1.0.18'
-    compile 'com.google.code.gson:gson:2.1'
-    compile 'com.google.android.gms:play-services-ads:7.8.0'
+    implementation 'com.android.support:appcompat-v7:22.1.0'
+    implementation 'com.mcxiaoke.volley:library:1.0.18'
+    implementation 'com.google.code.gson:gson:2.1'
+    implementation 'com.google.android.gms:play-services-ads:7.8.0'
 }
